@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "471657220780",
+    "project_id": "homecampus-b11f8",
+    "storage_bucket": "homecampus-b11f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471657220780:android:40f32892dfa3211edcad09",
+        "android_client_info": {
+          "package_name": "com.homecampus.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "471657220780-mpt8fe2e3de93id4kmvh7f0fdl2gormb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDW1d-m702H4C-78K_PIWwAKPMcnV0fjXo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471657220780-mpt8fe2e3de93id4kmvh7f0fdl2gormb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

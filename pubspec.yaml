@@ -1,0 +1,187 @@
+name: homecampus
+description: A new Flutter project.
+version: 1.0.0+1
+environment: 
+  sdk: '>=2.12.0 <3.0.0'
+dependencies: 
+  flutter: 
+    sdk: flutter
+  provider: ^6.0.5
+  cached_network_image: ^3.2.1
+  flutter_svg: ^1.1.6
+  country_pickers: ^2.0.0
+  outline_gradient_button: ^2.0.0+1
+  carousel_slider: ^4.2.1
+  smooth_page_indicator: ^1.0.0+2
+  flutter_svg_provider: ^1.0.3
+  intl: ^0.18.1
+  cloud_firestore: ^4.8.0
+  image_picker: ^0.8.7+5
+  image_cropper: ^4.0.1
+  path_provider: ^2.0.15
+  flutter_image_compress: ^2.0.3
+  firebase_storage: ^11.2.2
+  google_maps_flutter: ^2.3.0
+  http: ^0.13.6
+  geocoding: ^2.1.0
+  geolocator: ^9.0.2
+  uuid: ^3.0.7
+  location_map_picker: ^0.0.9+2
+  firebase_core: ^2.13.1
+  firebase_database: ^10.2.2
+  geopoint: ^1.0.0
+  firebase_auth: ^4.6.3
+  fluttertoast: ^8.2.2
+  url_launcher: ^6.1.11
+  file_picker: ^5.3.3
+  encrypt: ^5.0.1
+  crypto: ^3.0.3
+  logger: ^2.0.1
+  firebase_analytics: ^10.4.4
+dev_dependencies: 
+  flutter_test: 
+    sdk: flutter
+flutter: 
+  uses-material-design: true
+  assets: 
+    - assets/
+    - assets/images/
+  fonts: 
+    - family: Inter
+      fonts: 
+        - asset: assets/fonts/InterMedium.ttf
+          weight: 500
+        - asset: assets/fonts/InterRegular.ttf
+          weight: 400
+        - asset: assets/fonts/InterBold.ttf
+          weight: 700
+        - asset: assets/fonts/InterSemiBold.ttf
+          weight: 600
+    - family: Raleway
+      fonts: 
+        - asset: assets/fonts/RalewayBold.ttf
+          weight: 700
+        - asset: assets/fonts/RalewayRegular.ttf
+          weight: 400
+        - asset: assets/fonts/RalewayMedium.ttf
+          weight: 500
+        - asset: assets/fonts/RalewaySemiBold.ttf
+          weight: 600
+    - family: Poppins
+      fonts: 
+        - asset: assets/fonts/PoppinsBold.ttf
+          weight: 700
+        - asset: assets/fonts/PoppinsMedium.ttf
+          weight: 500
+        - asset: assets/fonts/PoppinsSemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PoppinsRegular.ttf
+          weight: 400
+        - asset: assets/fonts/PoppinsLight.ttf
+          weight: 300
+    - family: Lato
+      fonts: 
+        - asset: assets/fonts/LatoSemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/LatoBold.ttf
+          weight: 700
+        - asset: assets/fonts/LatoRegular.ttf
+          weight: 400
+        - asset: assets/fonts/LatoMedium.ttf
+          weight: 500
+    - family: SF Pro Display
+      fonts: 
+        - asset: assets/fonts/SFProDisplaySemibold.ttf
+          weight: 600
+        - asset: assets/fonts/SFProDisplayRegular.ttf
+          weight: 400
+        - asset: assets/fonts/SFProDisplayMedium.ttf
+          weight: 500
+    - family: Montserrat
+      fonts: 
+        - asset: assets/fonts/MontserratRomanSemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/MontserratRomanMedium.ttf
+          weight: 500
+        - asset: assets/fonts/MontserratRomanRegular.ttf
+          weight: 400
+        - asset: assets/fonts/MontserratSemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/MontserratMedium.ttf
+          weight: 500
+        - asset: assets/fonts/MontserratRegular.ttf
+          weight: 400
+    - family: DM Sans
+      fonts: 
+        - asset: assets/fonts/DMSansRegular.ttf
+          weight: 400
+        - asset: assets/fonts/DMSansBold.ttf
+          weight: 700
+        - asset: assets/fonts/DMSansMedium.ttf
+          weight: 500
+    - family: Rubik
+      fonts: 
+        - asset: assets/fonts/RubikMedium.ttf
+          weight: 500
+        - asset: assets/fonts/RubikRegular.ttf
+          weight: 400
+        - asset: assets/fonts/RubikBold.ttf
+          weight: 700
+        - asset: assets/fonts/RubikLight.ttf
+          weight: 300
+    - family: Urbanist
+      fonts: 
+        - asset: assets/fonts/UrbanistRomanSemiBold.ttf
+          weight: 600
+    - family: Hind
+      fonts: 
+        - asset: assets/fonts/HindRegular.ttf
+          weight: 400
+        - asset: assets/fonts/HindBold.ttf
+          weight: 700
+        - asset: assets/fonts/HindMedium.ttf
+          weight: 500
+    - family: Nunito Sans
+      fonts: 
+        - asset: assets/fonts/NunitoSansRegular.ttf
+          weight: 400
+        - asset: assets/fonts/NunitoSansBold.ttf
+          weight: 700
+    - family: Metropolis
+      fonts: 
+        - asset: assets/fonts/MetropolisSemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/MetropolisRegular.ttf
+          weight: 400
+    - family: Plus Jakarta Sans
+      fonts: 
+        - asset: assets/fonts/PlusJakartaSansRomanBold.ttf
+          weight: 700
+        - asset: assets/fonts/PlusJakartaSansRomanMedium.ttf
+          weight: 500
+        - asset: assets/fonts/PlusJakartaSansRomanSemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PlusJakartaSansItalicMedium.ttf
+          weight: 500
+    - family: Trebuchet MS
+      fonts: 
+        - asset: assets/fonts/TrebuchetMS.ttf
+          weight: 400
+    - family: Roboto
+      fonts: 
+        - asset: assets/fonts/RobotoRomanMedium.ttf
+          weight: 500
+        - asset: assets/fonts/RobotoRegular.ttf
+          weight: 400
+        - asset: assets/fonts/RobotoRomanRegular.ttf
+          weight: 400
+        - asset: assets/fonts/RobotoMedium.ttf
+          weight: 500
+    - family: Lota Grotesque Alt 1
+      fonts: 
+        - asset: assets/fonts/LotaGrotesqueAlt1SemiBold.ttf
+          weight: 600
+    - family: SF Pro Text
+      fonts: 
+        - asset: assets/fonts/SFProTextRegular.ttf
+          weight: 400
