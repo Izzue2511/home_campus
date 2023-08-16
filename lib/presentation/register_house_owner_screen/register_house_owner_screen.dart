@@ -95,12 +95,12 @@ bool passToggle = true;
         owner_name: fullnameController.text,
         owner_address: addressController.text,
         owner_email: emailController.text,
-        owner_phone: phoneNumController.text,
+        owner_phone: "+6" + phoneNumController.text,
         owner_password: passwordController.text,
         owner_image: "",
-        owner_accountBank: "",
-        owner_accountNo: "",
-        owner_accountHolder: "",
+        owner_accountBank: "No Account Bank",
+        owner_accountNo: "No Account Number",
+        owner_accountHolder: "No Account Holder",
       );
 
       // Encrypt the password before saving it to Firebase

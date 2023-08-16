@@ -29,6 +29,7 @@ import 'package:provider/provider.dart';
 import 'package:homecampus/core/utils/user_provider.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 // ignore_for_file: must_be_immutable
 
 class AddHouseRentalScreen extends StatefulWidget {
@@ -40,7 +41,7 @@ class AddHouseRentalScreen extends StatefulWidget {
 class Rental_Property{
   String property_id;
   String owner_id;
-  final String property_image;
+  String? property_image;
   final String property_name;
   final String property_description;
   final String property_address;
@@ -205,9 +206,28 @@ bool pressedDt = false;
 bool pressedLk = false;
 
   Future<void> createProperty(Rental_Property property, String ownerID) async {
-    final docProperty = FirebaseFirestore.instance.collection('rental_property').doc();
-    property.property_id = docProperty.id; // Assign the document ID to the property_id field
+    if (image != null) {
+      final imagePath = image!.path;
+      final imageFileName = basename(imagePath);
+
+      // Upload the image to Firebase Storage
+      final storageRef = firebase_storage.FirebaseStorage.instance.ref().child('property_images/$imageFileName');
+      final uploadTask = storageRef.putFile(File(imagePath));
+
+      // Get the download URL of the uploaded image
+      final downloadURL = await (await uploadTask).ref.getDownloadURL();
+
+      // Use the public download URL for the property_image field
+      property.property_image = downloadURL;
+    }
+
     property.owner_id = ownerID; // Set the house owner's ID (foreign key)
+
+    // Add the property to Firestore
+    final collectionRef = FirebaseFirestore.instance.collection('rental_property');
+    final docProperty = collectionRef.doc(); // Create a new document reference
+
+    property.property_id = docProperty.id; // Assign the document ID to the property_id field
 
     final json = property.toJson();
     await docProperty.set(json);
@@ -218,14 +238,11 @@ bool pressedLk = false;
 
   Future<void> pickImage() async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (image == null) return;
+      final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedImage == null) return;
 
-      final imagePermanent = await saveImagePermanently(image.path);
-      final path = imagePermanent.path;
       setState(() {
-        this.image = imagePermanent;
-        imagePath = path;
+        image = File(pickedImage.path);
       });
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
@@ -1298,7 +1315,7 @@ Widget build(
                                           true) {
                                         // Proceed with account creation
                                         final property = Rental_Property(
-                                          property_image: imagePath!,
+                                          property_image: imagePath,
                                           property_name: nameController.text,
                                           property_description: descriptionController
                                               .text,

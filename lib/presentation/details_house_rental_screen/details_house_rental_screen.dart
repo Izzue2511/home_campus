@@ -1,4 +1,4 @@
-import '../details_house_rental_screen/widgets/slidershadow2_item_widget.dart';
+//import '../details_house_rental_screen/widgets/slidershadow2_item_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:homecampus/core/app_export.dart';
@@ -192,19 +192,25 @@ Widget buildProperty (Rental_Property property) => Container(
                                                 child: Stack(
                                                     alignment: Alignment.bottomCenter,
                                                     children: [
-                                                      CarouselSlider.builder(
-                                                          options: CarouselOptions(
-                                                              height: getVerticalSize(290),
-                                                              initialPage: 0, autoPlay: true,
-                                                              viewportFraction: 1.0,
-                                                              enableInfiniteScroll: false,
-                                                              scrollDirection: Axis.horizontal,
-                                                              onPageChanged: (index, reason) {silderIndex = index;}),
-                                                          itemCount: 1,
-                                                          itemBuilder: (context, index, realIndex) {
-                                                            return Slidershadow2ItemWidget(
-                                                            );
-                                                          }
+                                                      Container(
+                                                        height: getVerticalSize(290),
+                                                        width: getHorizontalSize(369),
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(
+                                                              getHorizontalSize(20)),
+                                                          child: Image.network(
+                                                            property.property_image ?? '',
+                                                            height: getVerticalSize(235),
+                                                            width: getHorizontalSize(340),
+                                                            fit: BoxFit.cover,
+                                                            errorBuilder: (context, error, stackTrace) {
+                                                              return Icon(
+                                                                Icons.error_outline,
+                                                                size: getHorizontalSize(40),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
                                                       ),
                                                       Align(
                                                           alignment: Alignment.centerLeft,

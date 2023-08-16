@@ -31,6 +31,7 @@ class SlidershadowItemWidget extends StatelessWidget {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
+
                     CustomImageView(
                       imagePath: 'assets/images/house_1.jpg',
                       height: getVerticalSize(

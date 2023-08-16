@@ -1,3 +1,4 @@
+import '../profile_house_owner_screen/widgets/settingscards1_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:homecampus/core/app_export.dart';
 import 'package:homecampus/widgets/custom_button.dart';
@@ -7,55 +8,65 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:homecampus/core/utils/user_provider.dart';
 // ignore_for_file: must_be_immutable
-
-class ProfileStudentScreen extends StatefulWidget {
+class HouseOwnerBankInformationScreen extends StatefulWidget {
   @override
-  _ProfileStudentScreenState createState() => _ProfileStudentScreenState();
+  _HouseOwnerBankInformationScreenState createState() => _HouseOwnerBankInformationScreenState();
 
 }
 
-class Tenant{
-  String tenant_id;
-  final String tenant_name;
-  final String tenant_address;
-  final String tenant_email;
-  final String tenant_phone;
-  final String tenant_matricNum;
-  final String tenant_password;
+class House_Owner{
+  String owner_id;
+  final String owner_name;
+  final String owner_address;
+  final String owner_email;
+  final String owner_phone;
+  String owner_password;
+  final String owner_image;
+  final String owner_accountBank;
+  final String owner_accountNo;
+  final String owner_accountHolder;
 
-  Tenant({
-    this.tenant_id = '',
-    required this.tenant_name,
-    required this.tenant_address,
-    required this.tenant_email,
-    required this.tenant_phone,
-    required this.tenant_matricNum,
-    required this.tenant_password,
+  House_Owner({
+    this.owner_id = '',
+    required this.owner_name,
+    required this.owner_address,
+    required this.owner_email,
+    required this.owner_phone,
+    required this.owner_password,
+    required this.owner_image,
+    required this.owner_accountBank,
+    required this.owner_accountNo,
+    required this.owner_accountHolder,
   });
 
   Map<String, dynamic> toJson() => {
-    'tenant_id': tenant_id,
-    'tenant_name': tenant_name,
-    'tenant_address': tenant_address,
-    'tenant_email': tenant_email,
-    'tenant_phone': tenant_phone,
-    'tenant_matricNum': tenant_matricNum,
-    'tenant_password': tenant_password,
+    'owner_id': owner_id,
+    'owner_name': owner_name,
+    'owner_address': owner_address,
+    'owner_email': owner_email,
+    'owner_phone': owner_phone,
+    'owner_password': owner_password,
+    'owner_image': owner_image,
+    'owner_accountBank': owner_accountBank,
+    'owner_accountNo': owner_accountNo,
+    'owner_accountHolder': owner_accountHolder,
   };
 
-  static Tenant fromJson(Map<String, dynamic> json) => Tenant(
-    tenant_id: json['tenant_id'],
-    tenant_name: json['tenant_name'],
-    tenant_address: json['tenant_address'],
-    tenant_email: json['tenant_email'],
-    tenant_phone: json['tenant_phone'],
-    tenant_matricNum: json['tenant_matricNum'],
-    tenant_password: json['tenant_password'],
+  static House_Owner fromJson(Map<String, dynamic> json) => House_Owner(
+    owner_id: json['owner_id'],
+    owner_name: json['owner_name'],
+    owner_address: json['owner_address'],
+    owner_email: json['owner_email'],
+    owner_phone: json['owner_phone'],
+    owner_password: json['owner_password'],
+    owner_image: json['owner_image'],
+    owner_accountBank: json['owner_accountBank'],
+    owner_accountNo: json['owner_accountNo'],
+    owner_accountHolder: json['owner_accountHolder'],
   );
 }
 
-class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
-
+class _HouseOwnerBankInformationScreenState extends State<HouseOwnerBankInformationScreen> {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   User? currentUser;
@@ -80,53 +91,13 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
     }
   }
 
-  void onTapLogout(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Confirmation'),
-          content: Text('Are you sure you want to log out?'),
-          actions: <Widget>[
-            ElevatedButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the alert dialog
-              },
-            ),
-            ElevatedButton(
-              child: Text('Log Out'),
-              onPressed: () async {
-                Navigator.of(context).pop(); // Close the alert dialog
-                try {
-                  await FirebaseAuth.instance.signOut();
-                  Navigator.pushNamed(context, AppRoutes.loginStudentScreen);
-                } catch (e) {
-                  // Handle any error that occurs during sign-out.
-                  print('Error during sign-out: $e');
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
 // Function to check if the user is authenticated
   bool isUserAuthenticated() {
     return auth.currentUser != null;
   }
 
-  String obscureText(String text) {
-    String obscuredText = '';
-    for (int i = 0; i < text.length; i++) {
-      obscuredText += '•'; // Replace each character with a bullet symbol (•)
-    }
-    return obscuredText;
-  }
-
-  Widget buildTenant(Tenant tenant, String currentUserId) => Container(
+  Widget buildOwner (House_Owner owner, String currentUserId) =>
+      Container(
       width: double.maxFinite,
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -151,7 +122,7 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
                                   Padding(
                                     padding: getPadding(right: 175, bottom: 100),
                                     child: Text(
-                                      "Profile",
+                                      "Account",
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -182,9 +153,9 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
                                                   ElevatedButton(
                                                     child: Text('Delete'),
                                                     onPressed: () {
-                                                      final docTenant = FirebaseFirestore.instance.collection('tenant').doc(tenant.tenant_id);
+                                                      final docOwner = FirebaseFirestore.instance.collection('house_owner').doc(owner.owner_id);
                                                       // Add your delete logic here
-                                                      docTenant.delete();
+                                                      docOwner.delete();
 
                                                       onTapConfirmDeleted(context);// Close the alert dialog
                                                     },
@@ -200,6 +171,13 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
                                         ),
                                       ),
                                   ),
+                                  CustomImageView(
+                                      imagePath: ImageConstant.imgUnsplashjmurdhtm7ng130x130,
+                                      height: getSize(130),
+                                      width: getSize(130),
+                                      radius: BorderRadius.circular(
+                                          getHorizontalSize(65)),
+                                      alignment: Alignment.bottomCenter)
                                 ]
                             )
                         ),
@@ -208,7 +186,7 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
                           child: Row(
                             children: [
                               Text(
-                                "Edit Profile",
+                                "Edit Account",
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtDMSansBold18,
@@ -274,7 +252,7 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
                                     margin: getMargin(top: 0),
                                     child:
                                     Text(
-                                      tenant.tenant_name,
+                                      owner.owner_name,
                                       //overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
                                       style: AppStyle.txtDMSansMedium13,
@@ -320,25 +298,25 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
                                   },
                                 ),
                               ),
-                                Padding(
-                                    padding: getPadding(
-                                      left: 10,
-                                      top: 0,
-                                    ),
-                                    child: Container(
-                                      width: getHorizontalSize(270),
-                                      margin: getMargin(top: 0),
-                                      child:
-                                        Text(
-                                          tenant.tenant_address,
-                                          //overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.left,
-                                          style: AppStyle.txtDMSansMedium13,
-                                          maxLines: null,
-                                          //softWrap: false, // Set softWrap to false to limit words in one line
-                                        ),
-                                    ),
+                              Padding(
+                                padding: getPadding(
+                                  left: 10,
+                                  top: 0,
+                                ),
+                                child: Container(
+                                  width: getHorizontalSize(270),
+                                  margin: getMargin(top: 0),
+                                  child:
+                                  Text(
+                                    owner.owner_address,
+                                    //overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.left,
+                                    style: AppStyle.txtDMSansMedium13,
+                                    maxLines: null,
+                                    //softWrap: false, // Set softWrap to false to limit words in one line
                                   ),
+                                ),
+                              ),
                               Spacer(),
                             ],
                           ),
@@ -386,7 +364,7 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      tenant.tenant_email,
+                                      owner.owner_email,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
                                       style: AppStyle.txtDMSansMedium13,
@@ -440,61 +418,7 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      tenant.tenant_phone,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.left,
-                                      style: AppStyle.txtDMSansMedium13,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Spacer(),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: getMargin(left: 33, top: 28, right: 33), // <-- Moved margin after the positional arguments
-                          padding: getPadding(
-                            left: 16,
-                            top: 9,
-                            right: 16,
-                            bottom: 9,
-                          ),
-                          decoration: AppDecoration.fillGray30066.copyWith(
-                            borderRadius: BorderRadiusStyle.circleBorder29,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 30,
-                                height: 30,
-                                margin: getMargin(
-                                  top: 5,
-                                  bottom: 15,
-                                ),
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.school_outlined,
-                                    color: Colors.deepPurpleAccent.withOpacity(0.7),
-                                    size: 25, // Adjust the size according to your preference
-                                  ),
-                                  onPressed: () {
-                                    // Add your phone button logic here
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: getPadding(
-                                  left: 10,
-                                  top: 0,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      tenant.tenant_matricNum,
+                                      owner.owner_phone,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
                                       style: AppStyle.txtDMSansMedium13,
@@ -547,48 +471,11 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      obscureText(tenant.tenant_password),
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.left,
-                                      style: AppStyle.txtDMSansMedium13,
-                                    ),
                                   ],
                                 ),
                               ),
                               Spacer(),
                             ],
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            onTapLogout(context);
-                          },
-                          child: Container(
-                              margin: getMargin(left: 30, top: 40, right: 30, bottom: 40),
-                              padding: getPadding(left: 118, top: 10, right: 118, bottom: 10),
-                              decoration: AppDecoration.gradientIndigoA10001DeeppurpleA200.copyWith(borderRadius: BorderRadiusStyle.roundedBorder8),
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Padding(
-                                        padding: getPadding(top: 5),
-                                        child: Text(
-                                            "Log Out",
-                                            overflow: TextOverflow.ellipsis,
-                                            textAlign: TextAlign.left,
-                                            style: AppStyle.txtHindMedium22.copyWith(letterSpacing: getHorizontalSize(0.29))
-                                        )
-                                    ),
-                                    CustomImageView(
-                                        svgPath: ImageConstant.imgArrowleft,
-                                        height: getSize(30),
-                                        width: getSize(30),
-                                        margin: getMargin(left: 10, top: 5, bottom: 5))
-                                  ]
-                              )
                           ),
                         ),
                       ]
@@ -599,197 +486,182 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
       )
   );
 
-  Future<Tenant?> readTenant(String currentUserId) async {
+  Future<House_Owner?> readOwner(String currentUserId) async {
     try {
       final querySnapshot = await FirebaseFirestore.instance
-          .collection('tenant')
-          .where('tenant_id', isEqualTo: currentUserId)
+          .collection('house_owner')
+          .where('owner_id', isEqualTo: currentUserId)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        final tenantData = querySnapshot.docs.first.data();
-        return Tenant.fromJson(tenantData);
+        final ownerData = querySnapshot.docs.first.data();
+        return House_Owner.fromJson(ownerData);
       } else {
-        print("No tenant found for the current user.");
+        print("No house owner found for the current user.");
         return null;
       }
     } catch (e) {
-      print("Error fetching tenant data: $e");
+      print("Error fetching owner data: $e");
       return null;
     }
   }
 
-  @override
-Widget build(BuildContext context) {
-  final userProvider = Provider.of<UserProvider>(context);
-  final currentUserId = userProvider.currentUserId;
-  print('Current UserID: $currentUserId');
-/*
-  if (!isUserAuthenticated()) {
-    return Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
-  }
+ @override
+ Widget build(BuildContext context) {
+   final userProvider = Provider.of<UserProvider>(context);
+   final currentUserId = userProvider.currentUserId;
+   print('Current UserID: $currentUserId');
 
-  if (currentUserId == null) {
-    // If the currentUserId is null, show a loading indicator or redirect to the login screen.
-    // You can decide what to do here based on your app's requirements.
-    return Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
-  }*/
+  return SafeArea(
+      child: Scaffold(
+          backgroundColor: ColorConstant.whiteA700,
+          body:
+          FutureBuilder<House_Owner?>(
+            future: readOwner(currentUserId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Text('Something went wrong! ${snapshot.error}');
+              } else if (snapshot.hasData) {
+                final owner = snapshot.data;
+                if (owner == null) {
+                  return Center(child: Text('No House Owner'));
+                }
 
- return SafeArea(
-     child: Scaffold(
-         backgroundColor: ColorConstant.whiteA700,
-         body: FutureBuilder<Tenant?>(
-           future: readTenant(currentUserId),
-           builder: (context, snapshot) {
-             if (snapshot.connectionState == ConnectionState.waiting) {
-               return Center(child: CircularProgressIndicator());
-             } else if (snapshot.hasError) {
-               return Text('Something went wrong! ${snapshot.error}');
-             } else if (snapshot.hasData) {
-               final tenant = snapshot.data;
-               return tenant == null
-                   ? Center(child: Text('No Tenant'))
-                   : buildTenant(tenant, currentUserId);
-             } else {
-               return Center(child: Text('No data available'));
-             }
-           },
-         ),
+                return buildOwner(owner, currentUserId);
+              }else {
+                return Center(child: Text('No data available'));
+              }
+            },
+          ),
 
-         bottomNavigationBar: Container(
-             width: double.maxFinite,
-             padding: getPadding(left: 44, top: 5, right: 44, bottom: 15),
-             decoration: AppDecoration.fillWhiteA700,
-             child: Column(
-                 mainAxisSize: MainAxisSize.min,
-                 mainAxisAlignment: MainAxisAlignment.start,
-                 children: [Container(
-                     decoration: AppDecoration.fillWhiteA700,
-                     child: Row(
-                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                         crossAxisAlignment: CrossAxisAlignment.end,
+          bottomNavigationBar: Container(
+              width: double.maxFinite,
+              padding: getPadding(left: 45, top: 5, right: 45, bottom: 15),
+              decoration: AppDecoration.fillWhiteA700,
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [Container(
+                      decoration: AppDecoration.fillWhiteA700,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
 
-                         children: [Padding(
-                             padding: getPadding(top: 15),
-                             child: GestureDetector(
-                                 onTap: () {
-                                   onTapHome(context);
-                                 },
-                                 child: Column(
-                                     mainAxisSize: MainAxisSize.min,
-                                     mainAxisAlignment: MainAxisAlignment.start,
-                                     children: [CustomImageView(
-                                         imagePath: ImageConstant.imgVuesaxboldhome,
-                                         height: getSize(26),
-                                         width: getSize(26)),
-                                       Padding(
-                                           padding: getPadding(top: 2),
-                                           child: Text(
-                                               "Home",
-                                               overflow: TextOverflow.ellipsis,
-                                               textAlign: TextAlign.left,
-                                               style: AppStyle.txtHindMedium12)
-                                       )
-                                     ]
-                                 )
-                             )
-                         ),
-                           GestureDetector(
-                               onTap: () {
-                                 onTapSaved(context);
-                               },
-                               child:Padding(
-                                   padding: getPadding(top: 15),
-                                   child: Column(
-                                       mainAxisSize: MainAxisSize.min,
-                                       mainAxisAlignment: MainAxisAlignment.start,
-                                       children: [
-                                         CustomImageView(
-                                             svgPath: ImageConstant.imgClock,
-                                             height: getSize(25),
-                                             width: getSize(25)),
-                                         Padding(
-                                             padding: getPadding(top: 2),
-                                             child: Text(
-                                                 "Saved",
-                                                 overflow: TextOverflow.ellipsis,
-                                                 textAlign: TextAlign.left,
-                                                 style: AppStyle.txtHindMedium12))
-                                       ]
-                                   )
-                               )
-                           ),
-                           GestureDetector(
-                               onTap: () {onTapSchedule(context);},
-                               child: Padding(
-                                   padding: getPadding(top: 15),
-                                   child: Column(
-                                       mainAxisSize: MainAxisSize.min,
-                                       mainAxisAlignment: MainAxisAlignment.start,
-                                       children: [CustomImageView(
-                                           svgPath: ImageConstant.imgCalendar10,
-                                           height: getSize(25),
-                                           width: getSize(25)),
-                                         Padding(
-                                             padding: getPadding(top: 2),
-                                             child: Text(
-                                                 "Booking",
-                                                 overflow: TextOverflow.ellipsis,
-                                                 textAlign: TextAlign.left,
-                                                 style: AppStyle.txtHindMedium12))]
-                                   )
-                               )
-                           ),
-                           GestureDetector(
-                               onTap: () {onTapProfile(context);},
-                               child:Padding(
-                                   padding: getPadding(top: 15),
-                                   child: Column(
-                                       mainAxisSize: MainAxisSize.min,
-                                       mainAxisAlignment: MainAxisAlignment.start,
-                                       children: [CustomImageView(
-                                           svgPath: ImageConstant.imgUser,
-                                           height: getSize(25),
-                                           width: getSize(25)),
-                                         Padding(
-                                             padding: getPadding(top: 2),
-                                             child: Text(
-                                                 "Profile",
-                                                 overflow: TextOverflow.ellipsis,
-                                                 textAlign: TextAlign.left,
-                                                 style: AppStyle.txtHindMedium12)
-                                         )
-                                       ]
-                                   )
-                               ))
-                         ]
-                     )
-                 )
-                 ]
-             )
-         )
-     )
- );
-}
+                          children: [Padding(
+                              padding: getPadding(top: 15),
+                              child: GestureDetector(
+                                  onTap: () {
+                                    onTapHomeicon(context);
+                                  },
+                                  child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [CustomImageView(
+                                          imagePath: ImageConstant.imgVuesaxboldhome,
+                                          height: getSize(26),
+                                          width: getSize(26)),
+                                        Padding(
+                                            padding: getPadding(top: 2),
+                                            child: Text(
+                                                "Home",
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.left,
+                                                style: AppStyle.txtHindMedium12)
+                                        )
+                                      ]
+                                  )
+                              )
+                          ),
+                            GestureDetector(
+                                onTap: () {onTapButton(context);},
+                                child:Padding(
+                                    padding: getPadding(top: 15),
+                                    child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          CustomImageView(
+                                              svgPath: ImageConstant.imgComputer,
+                                              height: getSize(25),
+                                              width: getSize(25)),
+                                          Padding(
+                                              padding: getPadding(top: 2),
+                                              child: Text(
+                                                  "Property",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.left,
+                                                  style: AppStyle.txtHindMedium12))
+                                        ]
+                                    )
+                                )
+                            ),
+                            GestureDetector(
+                                onTap: () {onTapExploreicon(context);},
+                                child: Padding(
+                                    padding: getPadding(top: 15),
+                                    child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [CustomImageView(
+                                            svgPath: ImageConstant.imgCalendar10,
+                                            height: getSize(25),
+                                            width: getSize(25)),
+                                          Padding(
+                                              padding: getPadding(top: 2),
+                                              child: Text(
+                                                  "Booking",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.left,
+                                                  style: AppStyle.txtHindMedium12))]
+                                    )
+                                )
+                            ),
+                            GestureDetector(
+                                onTap: () {onTapProfile(context);},
+                                child:Padding(
+                                    padding: getPadding(top: 15),
+                                    child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [CustomImageView(
+                                            svgPath: ImageConstant.imgUser,
+                                            height: getSize(25),
+                                            width: getSize(25)),
+                                          Padding(
+                                              padding: getPadding(top: 2),
+                                              child: Text(
+                                                  "Profile",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.left,
+                                                  style: AppStyle.txtHindMedium12)
+                                          )
+                                        ]
+                                    )
+                                ))
+                          ]
+                      )
+                  )
+                  ]
+              )
+          )
+      )
+  );
+ }
 
   onTapConfirmDeleted(
-      BuildContext context) { Navigator.pushNamed(context, AppRoutes.loginStudentScreen); }
+      BuildContext context) { Navigator.pushNamed(context, AppRoutes.loginHouseOwnerScreen); }
   onTapCancelDeleted(
-      BuildContext context) { Navigator.pushNamed(context, AppRoutes.profileStudentScreen); }
- onTapNotification(BuildContext context) { Navigator.pushNamed(context, AppRoutes.notificationOwnerScreen); }
- onTapEditProfile(
-     BuildContext context) { Navigator.pushNamed(context, AppRoutes.profileEditHouseOwnerScreen); }
- onTapHome(
-     BuildContext context) { Navigator.pushNamed(context, AppRoutes.homeStudentScreen); }
- onTapSchedule(
-     BuildContext context) { Navigator.pushNamed(context, AppRoutes.scheduledStatusPage); }
- onTapSaved(
-     BuildContext context) { Navigator.pushNamed(context, AppRoutes.savedPage); }
+      BuildContext context) { Navigator.pushNamed(context, AppRoutes.profileHouseOwnerScreen); }
+onTapEditProfile(BuildContext context) { Navigator.pushNamed(context, AppRoutes.profileEditOwnerScreen); }
+onTapNotification(BuildContext context) { Navigator.pushNamed(context, AppRoutes.notificationOwnerScreen); }
+ onTapHomeicon(BuildContext context) {
+   Navigator.pushNamed(context, AppRoutes.homeHouseOwnerScreen); }
+ onTapExploreicon(BuildContext context) {
+   Navigator.pushNamed(context, AppRoutes.scheduledRequestedScreen); }
+ onTapButton(
+     BuildContext context) { Navigator.pushNamed(context, AppRoutes.addHouseRentalScreen); }
  onTapProfile(
-     BuildContext context) { Navigator.pushNamed(context, AppRoutes.profileStudentScreen); }
-
+     BuildContext context) { Navigator.pushNamed(context, AppRoutes.profileHouseOwnerScreen); }
  }

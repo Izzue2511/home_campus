@@ -212,13 +212,26 @@ class _HomeStudentScreenState extends State<HomeStudentScreen> {
                  child: Stack(
                      alignment: Alignment.center,
                      children: [
-                       CustomImageView(
-                         imagePath: 'assets/images/house_1.jpg',
+                       Container(
                          height: getVerticalSize(235),
                          width: getHorizontalSize(340),
-                         radius: BorderRadius.circular(
-                             getHorizontalSize(20)),
-                         alignment: Alignment.center),
+                         child: ClipRRect(
+                           borderRadius: BorderRadius.circular(
+                               getHorizontalSize(20)),
+                           child: Image.network(
+                             property.property_image ?? '',
+                             height: getVerticalSize(235),
+                             width: getHorizontalSize(340),
+                             fit: BoxFit.cover,
+                             errorBuilder: (context, error, stackTrace) {
+                               return Icon(
+                                 Icons.error_outline,
+                                 size: getHorizontalSize(40),
+                               );
+                             },
+                           ),
+                         ),
+                       ),
                      ]
                  )
              ),
@@ -232,6 +245,7 @@ class _HomeStudentScreenState extends State<HomeStudentScreen> {
                                property.property_name,
                                overflow: TextOverflow.ellipsis,
                                textAlign: TextAlign.left,
+                               maxLines: null,
                                style: AppStyle.txtRalewayMedium16)),
                          Container(
                              padding: getPadding(left: 8, top: 4, right: 8, bottom: 4),
@@ -267,22 +281,10 @@ class _HomeStudentScreenState extends State<HomeStudentScreen> {
                        crossAxisAlignment: CrossAxisAlignment.end,
                        children: [
                          CustomImageView(
-                           svgPath: ImageConstant.imgLocation,
-                           height: getSize(15),
-                           width: getSize(15),
-                           margin: getMargin(bottom: 5)),
-                         Padding(
-                             padding: getPadding(left: 3, bottom: 3),
-                             child: Text(
-                                 "Merlimau, Melaka",
-                                 overflow: TextOverflow.ellipsis,
-                                 textAlign: TextAlign.left,
-                                 style: AppStyle.txtPoppinsMedium12)),
-                         CustomImageView(
                              imagePath: ImageConstant.imgGroup2,
                              height: getSize(14),
                              width: getSize(14),
-                             margin: getMargin(left: 140, top: 7, bottom: 3)),
+                             margin: getMargin(left: 265, top: 7, bottom: 3)),
                          Padding(
                              padding: getPadding(left: 6, top: 6, bottom: 2),
                              child: Text(
