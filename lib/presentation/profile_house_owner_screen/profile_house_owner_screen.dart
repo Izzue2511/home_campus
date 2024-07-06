@@ -1,4 +1,4 @@
-import '../profile_house_owner_screen/widgets/settingscards1_item_widget.dart';
+// import '../profile_house_owner_screen/widgets/settingscards1_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:homecampus/core/app_export.dart';
 import 'package:homecampus/widgets/custom_button.dart';
@@ -525,6 +525,174 @@ class _ProfileHouseOwnerScreenState extends State<ProfileHouseOwnerScreen> {
                                   children: [
                                     Text(
                                       obscureText(decryptedPassword),
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.left,
+                                      style: AppStyle.txtDMSansMedium13,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Spacer(),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: getMargin(left: 33, top: 28, right: 33),
+                          decoration: AppDecoration.outlineBlack9003f,
+                          child: Container(
+                            padding: getPadding(
+                              left: 16,
+                              top: 9,
+                              right: 16,
+                              bottom: 9,
+                            ),
+                            decoration: AppDecoration.fillGray30066.copyWith(
+                              borderRadius: BorderRadiusStyle.circleBorder29,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  margin: getMargin(
+                                    top: 5,
+                                    bottom: 15,
+                                  ),
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.account_balance_outlined,
+                                      color: Colors.deepPurpleAccent.withOpacity(0.7),
+                                      size: 25, // Adjust the size according to your preference
+                                    ),
+                                    onPressed: () {
+                                      // Add your phone button logic here
+                                    },
+                                  ),
+                                ),
+                                Padding(
+                                  padding: getPadding(
+                                    left: 10,
+                                    top: 0,
+                                  ),
+                                  child: Container(
+                                    width: getHorizontalSize(270),
+                                    margin: getMargin(top: 0),
+                                    child:
+                                    Text(
+                                      owner.owner_accountBank,
+                                      //overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.left,
+                                      style: AppStyle.txtDMSansMedium13,
+                                      maxLines: null,
+                                      //softWrap: false, // Set softWrap to false to limit words in one line
+                                    ),
+                                  ),
+                                ),
+                                Spacer(),
+                              ],
+                            ),
+                          ),
+                        ), // <-- Added closing parenthesis for the first Container
+                        Container(
+                          margin: getMargin(left: 33, top: 28, right: 33), // <-- Moved margin after the positional arguments
+                          padding: getPadding(
+                            left: 16,
+                            top: 9,
+                            right: 16,
+                            bottom: 9,
+                          ),
+                          decoration: AppDecoration.fillGray30066.copyWith(
+                            borderRadius: BorderRadiusStyle.circleBorder29,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 30,
+                                height: 30,
+                                margin: getMargin(
+                                  top: 5,
+                                  bottom: 15,
+                                ),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.account_balance_wallet_outlined,
+                                    color: Colors.deepPurpleAccent.withOpacity(0.7),
+                                    size: 25, // Adjust the size according to your preference
+                                  ),
+                                  onPressed: () {
+                                    // Add your phone button logic here
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: getPadding(
+                                  left: 10,
+                                  top: 0,
+                                ),
+                                child: Container(
+                                  width: getHorizontalSize(270),
+                                  margin: getMargin(top: 0),
+                                  child:
+                                  Text(
+                                    owner.owner_accountNo,
+                                    //overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.left,
+                                    style: AppStyle.txtDMSansMedium13,
+                                    maxLines: null,
+                                    //softWrap: false, // Set softWrap to false to limit words in one line
+                                  ),
+                                ),
+                              ),
+                              Spacer(),
+                            ],
+                          ),
+                        ),
+
+                        Container(
+                          margin: getMargin(left: 33, top: 28, right: 33), // <-- Moved margin after the positional arguments
+                          padding: getPadding(
+                            left: 16,
+                            top: 9,
+                            right: 16,
+                            bottom: 9,
+                          ),
+                          decoration: AppDecoration.fillGray30066.copyWith(
+                            borderRadius: BorderRadiusStyle.circleBorder29,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 30,
+                                height: 30,
+                                margin: getMargin(
+                                  top: 5,
+                                  bottom: 15,
+                                ),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.account_box_outlined,
+                                    color: Colors.deepPurpleAccent.withOpacity(0.7),
+                                    size: 25, // Adjust the size according to your preference
+                                  ),
+                                  onPressed: () {
+                                    // Add your phone button logic here
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: getPadding(
+                                  left: 10,
+                                  top: 0,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      owner.owner_accountHolder,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
                                       style: AppStyle.txtDMSansMedium13,

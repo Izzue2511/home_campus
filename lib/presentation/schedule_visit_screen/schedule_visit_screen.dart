@@ -4,18 +4,20 @@ import 'package:homecampus/widgets/app_bar/appbar_iconbutton.dart';
 import 'package:homecampus/widgets/app_bar/appbar_subtitle.dart';
 import 'package:homecampus/widgets/app_bar/custom_app_bar.dart';
 import 'package:homecampus/widgets/custom_button.dart';
-import 'package:homecampus/widgets/custom_text_form_field.dart';
+// import 'package:homecampus/widgets/custom_text_form_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:homecampus/core/utils/user_provider.dart';
-import 'package:homecampus/routes/app_routes.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:homecampus/routes/app_routes.dart';
+// import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:url_launcher/url_launcher.dart';
 // ignore_for_file: must_be_immutable
 
 class ScheduleVisitScreen extends StatefulWidget {
@@ -78,7 +80,7 @@ class House_Owner{
 class Rental_Property{
   String property_id;
   String owner_id;
-  final String property_image;
+  String? property_image;
   final String property_name;
   final String property_description;
   final String property_address;
@@ -177,7 +179,7 @@ class Booking_Property{
  String property_id;
  String owner_id;
  final String booking_price;
- final String booking_receipt;
+ String? booking_receipt;
  final String booking_date;
  final String booking_status;
 
@@ -235,7 +237,6 @@ class _ScheduleVisitScreenState extends State<ScheduleVisitScreen> {
     }
   }
 
-
 // Function to check if the user is authenticated
   bool isUserAuthenticated() {
     return auth.currentUser != null;
@@ -253,13 +254,33 @@ GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     final docBooking = FirebaseFirestore.instance.collection('booking_property').doc();
     booking.booking_id = docBooking.id; // Assign the document ID to the booking_id field
     booking.tenant_id = tenantID; // Assign the currentUserId to the tenant_id field
+    booking.booking_receipt = filePath; // Store the download URL
 
     final json = booking.toJson();
     await docBooking.set(json);
   }
 
+  String getFileName() {
+    if (file != null) {
+      return path.basename(file!.path);
+    } else {
+      return 'No file picked';
+    }
+  }
+
+  String getFileSize() {
+    if (file != null) {
+      int sizeInBytes = file!.lengthSync();
+      double sizeInKB = sizeInBytes / 1024;
+      return sizeInKB.toStringAsFixed(2) + ' KB';
+    } else {
+      return '';
+    }
+  }
+
   File? file;
   String? filePath;
+  String? downloadURL;
 
   Future<void> pickFile() async {
     try {
@@ -271,12 +292,21 @@ GlobalKey<FormState> _formKey = GlobalKey<FormState>();
       if (result == null || result.files.isEmpty) return;
 
       final file = File(result.files.single.path!);
-      final filePermanent = await saveFilePermanently(file.path);
-      final path = filePermanent.path;
+      final fileName = path.basename(file.path);
+      final firebase_storage.Reference storageRef = firebase_storage.FirebaseStorage.instance.ref('pdfs/$fileName'); // Replace 'pdfs' with your desired storage path
+
+      final metadata = firebase_storage.SettableMetadata(
+        contentType: 'application/pdf',
+      );
+
+      await storageRef.putFile(file, metadata);
+
+      final downloadURL = await storageRef.getDownloadURL();
       setState(() {
-        this.file = filePermanent;
-        filePath = path;
-        isFileUploaded = true;
+        this.file = file;
+        this.filePath = downloadURL; // Set the value of downloadURL here// Store the download URL in filePath variable
+        this.isFileUploaded = true;
+        //this.downloadURL = downloadURL;
       });
     } catch (e) {
       print('Failed to pick file: $e');
@@ -289,6 +319,14 @@ GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     final file = File('${directory.path}/$name');
 
     return File(filePath).copy(file.path);
+  }
+
+  Future<void> _downloadPDF(String filePath) async {
+    try {
+      await launch(filePath);
+    } catch (e) {
+      print('Error launching URL: $e');
+    }
   }
 
 DateTime _dateTime = DateTime.now();
@@ -353,12 +391,27 @@ void _showDatePicker() {
                                                 child: Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [CustomImageView(
-                                                        imagePath: 'assets/images/house_1.jpg',
+                                                    children: [
+                                                      Container(
                                                         height: getVerticalSize(130),
-                                                        width: getHorizontalSize(130),
-                                                        radius: BorderRadius.circular(
-                                                            getHorizontalSize(20))),
+                                                        width: getHorizontalSize(139),
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(
+                                                              getHorizontalSize(20)),
+                                                          child: Image.network(
+                                                            property.property_image ?? '',
+                                                            height: getVerticalSize(130),
+                                                            width: getHorizontalSize(130),
+                                                            fit: BoxFit.cover,
+                                                            errorBuilder: (context, error, stackTrace) {
+                                                              return Icon(
+                                                                Icons.error_outline,
+                                                                size: getHorizontalSize(40),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
                                                       Padding(
                                                           padding: getPadding(bottom: 5),
                                                           child: Column(
@@ -601,16 +654,126 @@ void _showDatePicker() {
                                                   )
                                                       : // Replace Image.file with a widget to show the PDF content
                                                   Container(
-                                                    width: 200,
-                                                    height: 200,
-                                                    color: Colors.grey, // Placeholder color for PDF content
-                                                    child: Center(
-                                                      child: Text(
-                                                        'PDF File',
-                                                        style: TextStyle(fontSize: 20, color: Colors.white),
-                                                      ),
+                                                    margin: getMargin(
+                                                      left: 7,
+                                                      top: 29,
+                                                      right: 7,
                                                     ),
-                                                  ),
+                                                    padding: getPadding(
+                                                      left: 8,
+                                                      top: 2,
+                                                      right: 8,
+                                                      bottom: 2,
+                                                    ),
+                                                    width: 300,
+                                                    height: 70,
+                                                    decoration: AppDecoration.fillGray5003.copyWith(
+                                                      borderRadius:
+                                                      BorderRadiusStyle.roundedBorder5,
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        Card(
+                                                          clipBehavior: Clip.antiAlias,
+                                                          elevation: 0,
+                                                          margin: getMargin(
+                                                            top: 3,
+                                                            bottom: 3,
+                                                          ),
+                                                          color: ColorConstant.red900,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadiusStyle.roundedBorder5,
+                                                          ),
+                                                          child: Container(
+                                                            height: getVerticalSize(
+                                                              42,
+                                                            ),
+                                                            width: getHorizontalSize(
+                                                              36,
+                                                            ),
+                                                            padding: getPadding(
+                                                              all: 6,
+                                                            ),
+                                                            decoration:
+                                                            AppDecoration.fillGray5003.copyWith(
+                                                              borderRadius:
+                                                              BorderRadiusStyle.roundedBorder5,
+                                                            ),
+                                                            child: Stack(
+                                                            children: [ CustomImageView(
+                                                                imagePath:
+                                                                ImageConstant.imgImage2,
+                                                                height: getVerticalSize(
+                                                                  28,
+                                                                ),
+                                                                width: getHorizontalSize(
+                                                                  23,
+                                                                ),
+                                                                alignment: Alignment.topCenter,
+                                                              ),
+                                                               ]
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: getPadding(
+                                                            left: 12,
+                                                            top: 10,
+                                                            bottom: 10,
+                                                          ),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                            CrossAxisAlignment.start,
+                                                            mainAxisAlignment:
+                                                            MainAxisAlignment.start,
+                                                            children: [
+                                                        Text(
+                                                          getFileName(),
+                                                          overflow: TextOverflow.ellipsis,
+                                                          textAlign: TextAlign.left,
+                                                          style: AppStyle
+                                                              .txtHindMedium12,
+                                                        ), // File name
+                                                        Text(
+                                                          getFileSize(),
+                                                          overflow: TextOverflow.ellipsis,
+                                                          textAlign: TextAlign.left,
+                                                          style: AppStyle
+                                                              .txtHindMedium12,
+                                                        ),
+                                                            ],
+                                                          ),
+                                                        ),// File size
+                                                        Spacer(),
+                                                        Container(
+                                                          height: getSize(
+                                                            38,
+                                                          ),
+                                                          width: getSize(
+                                                            38,
+                                                          ),
+                                                          margin: getMargin(
+                                                            top: 0,
+                                                            right: 5,
+                                                          ),
+                                                          child: Stack(
+                                                            alignment: Alignment.center,
+                                                            children: [
+                                                        file != null
+                                                            ? IconButton(
+                                                          icon: Icon(Icons.download, color: Colors.purple.withOpacity(0.8)),
+                                                          onPressed: (){_downloadPDF(filePath!);}
+                                                        ) // Download icon
+                                                            : SizedBox.shrink(),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
                                                 ],
                                               ),
                                             ),
@@ -643,9 +806,7 @@ void _showDatePicker() {
 
                                                       onTapConfirm(context);
 
-                                                      createBooking(
-                                                          booking,
-                                                          currentUserId);
+                                                      createBooking(booking, currentUserId);
                                                     } else {
                                                       print(
                                                           "CurrentUserid is null");
@@ -657,7 +818,7 @@ void _showDatePicker() {
                                                     // Show an error message or notification to inform the user to upload the file first
                                                     // For example:
                                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                      content: Text('Please upload the payment receipt first.'),
+                                                      content: Text('Please upload the payment receipt in pdf format.'),
                                                     ));
                                                   }
                                                 }
@@ -712,19 +873,6 @@ Widget build(BuildContext context) {
   final userProvider = Provider.of<UserProvider>(context);
   final currentUserId = userProvider.currentUserId;
   print('Current UserID: $currentUserId');
-/*
-  if (!isUserAuthenticated()) {
-    return Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
-  }
-
-  if (currentUserId == null) {
-    // If the currentUserId is null, show a loading indicator or redirect to the login screen.
-    return Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
-  }*/
 
   final String? propertyIdArg =
   ModalRoute.of(context)?.settings.arguments as String?;

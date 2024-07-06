@@ -6,14 +6,16 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Delay the navigation to the next screen after 5 seconds
-    Future.delayed(Duration(seconds: 4), () {
+    Future.delayed(
+      Duration(seconds: 4), () {
       // Navigate to the next screen
       // Replace `NextScreen` with the desired screen you want to navigate to
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => WelcomeUserScreen()),
       );
-    });
+    }
+    );
 
     return SafeArea(
       child: Scaffold(

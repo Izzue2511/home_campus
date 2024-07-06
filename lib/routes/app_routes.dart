@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:homecampus/presentation/house_owner_profile_account_screen/house_owner_profile_account_screen.dart';
+import 'package:homecampus/presentation/house_owner_bank_information_screen/house_owner_bank_information_screen.dart';
+import 'package:homecampus/presentation/list_of_tenant_screen/list_of_tenant_screen.dart';
 import 'package:homecampus/presentation/saved_page/saved_page.dart';
 import 'package:homecampus/presentation/scheduled_status_page/scheduled_status_page.dart';
 import 'package:homecampus/presentation/splash_screen/splash_screen.dart';
@@ -272,6 +275,10 @@ class AppRoutes {
 
   static const String profileHouseOwnerScreen = '/profile_house_owner_screen';
 
+  static const String houseOwnerProfileAccountScreen = '/house_owner_profile_account_screen';
+
+  static const String houseOwnerBankInformationScreen = '/house_owner_bank_information_screen';
+
   static const String profileAdminScreen = '/profile_admin_screen';
 
   static const String profileEditOwnerScreen = '/profile_edit_owner_screen';
@@ -295,6 +302,8 @@ class AppRoutes {
       '/confirmed_scheduled_successfully_screen';
 
   static const String chatOwnerScreen = '/chat_owner_screen';
+
+  static const String listOfTenantScreen = '/list_of_tenant_screen';
 
   static const String chatRoomOwnerScreen = '/chat_room_owner_screen';
 
@@ -389,6 +398,7 @@ class AppRoutes {
     newPasswordHouseOwnerScreen: (context) => NewPasswordHouseOwnerScreen(),
     passwordChangesSuccessScreen: (context) => PasswordChangesSuccessScreen(),
     faceVerificationScreen: (context) => FaceVerificationScreen(),
+    listOfTenantScreen: (context) => ListOfTenantScreen(),
     frontIcCardScreen: (context) => FrontIcCardScreen(),
     takeASelfieScreen: (context) => TakeASelfieScreen(),
     faceOvalScreen: (context) => FaceOvalScreen(),
@@ -408,6 +418,8 @@ class AppRoutes {
     videoCallOwnerScreen: (context) => VideoCallOwnerScreen(),
     notificationOwnerScreen: (context) => NotificationOwnerScreen(),
     profileHouseOwnerScreen: (context) => ProfileHouseOwnerScreen(),
+    houseOwnerProfileAccountScreen: (context) => HouseOwnerProfileAccountScreen(),
+    houseOwnerBankInformationScreen: (context) => HouseOwnerBankInformationScreen(),
     profileEditOwnerScreen: (context) => ProfileEditOwnerScreen(),
     profileEditAdminScreen: (context) => ProfileEditAdminScreen(),
     icVerificationScreen: (context) => IcVerificationScreen(),

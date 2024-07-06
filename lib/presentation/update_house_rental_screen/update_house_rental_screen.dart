@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:homecampus/core/app_export.dart';
 import 'package:homecampus/widgets/custom_button.dart';
-import 'package:homecampus/widgets/app_bar/appbar_image.dart';
+// import 'package:homecampus/widgets/app_bar/appbar_image.dart';
 import 'package:homecampus/widgets/custom_icon_button.dart';
 import 'package:homecampus/widgets/custom_text_form_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,9 +16,9 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 import 'package:homecampus/core/utils/user_provider.dart';
-import 'package:homecampus/routes/app_routes.dart';
+// import 'package:homecampus/routes/app_routes.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
+// import 'package:firebase_analytics/observer.dart';
 
 //import 'package:path/path.dart';
 // ignore_for_file: must_be_immutable
@@ -222,7 +222,6 @@ class _UpdateHouseRentalScreenState extends State<UpdateHouseRentalScreen> {
 
     return File(imagePath).copy(image.path);
   }
-
 
   Widget buildProperty (Rental_Property property) => Container(
       width: double.maxFinite,
@@ -1242,7 +1241,7 @@ Widget build(
 
          bottomNavigationBar: Container(
              width: double.maxFinite,
-             padding: getPadding(left: 44, top: 5, right: 44, bottom: 15),
+             padding: getPadding(left: 45, top: 5, right: 45, bottom: 15),
              decoration: AppDecoration.fillWhiteA700,
              child: Column(
                  mainAxisSize: MainAxisSize.min,
@@ -1254,7 +1253,7 @@ Widget build(
                          crossAxisAlignment: CrossAxisAlignment.end,
 
                          children: [Padding(
-                             padding: getPadding(top: 16),
+                             padding: getPadding(top: 15),
                              child: GestureDetector(
                                  onTap: () {
                                    onTapHomeicon(context);
@@ -1264,8 +1263,8 @@ Widget build(
                                      mainAxisAlignment: MainAxisAlignment.start,
                                      children: [CustomImageView(
                                          imagePath: ImageConstant.imgVuesaxboldhome,
-                                         height: getSize(24),
-                                         width: getSize(24)),
+                                         height: getSize(26),
+                                         width: getSize(26)),
                                        Padding(
                                            padding: getPadding(top: 2),
                                            child: Text(
@@ -1279,77 +1278,21 @@ Widget build(
                              )
                          ),
                            GestureDetector(
-                               onTap: () {onTapExploreicon(context);},
-                               child: Padding(
-                                   padding: getPadding(top: 16),
+                               onTap: () {onTapButton(context);},
+                               child:Padding(
+                                   padding: getPadding(top: 15),
                                    child: Column(
-                                       mainAxisSize: MainAxisSize.min,
-                                       mainAxisAlignment: MainAxisAlignment.start,
-                                       children: [CustomImageView(
-                                           svgPath: ImageConstant.imgCalendar10,
-                                           height: getSize(24),
-                                           width: getSize(24)),
-                                         Padding(
-                                             padding: getPadding(top: 2),
-                                             child: Text(
-                                                 "Schedule",
-                                                 overflow: TextOverflow.ellipsis,
-                                                 textAlign: TextAlign.left,
-                                                 style: AppStyle.txtHindMedium12))]))),
-                           Container(
-                             height: getSize(64),
-                             width: getSize(64),
-                             child: Stack(
-                               alignment: Alignment.topCenter,
-                               children: [
-                                 Align(
-                                   alignment: Alignment.center,
-                                   child: GestureDetector(
-                                     child: Column(
                                        mainAxisSize: MainAxisSize.min,
                                        mainAxisAlignment: MainAxisAlignment.start,
                                        children: [
-                                         Container(
-                                           height: getSize(55),
-                                           width: getSize(55),
-                                           decoration: BoxDecoration(
-                                             color: ColorConstant.gray20001,
-                                             borderRadius: BorderRadius.circular(getHorizontalSize(27)),
-                                           ),
-                                         ),
-                                       ],
-                                     ),
-                                   ),
-                                 ),
-                                 GestureDetector(
-                                   child: CustomImageView(
-                                     onTap: () {onTapButton(context);},
-                                     svgPath: ImageConstant.imgIcon,
-                                     height: getSize(43),
-                                     width: getSize(43),
-                                     alignment: Alignment.topCenter,
-                                     margin: getMargin(top: 7),
-                                   ),
-                                 ),
-                               ],
-                             ),
-                           ),
-
-                           GestureDetector(
-                               onTap: () {onTapChat(context);},
-                               child:Padding(
-                                   padding: getPadding(top: 16),
-                                   child: Column(
-                                       mainAxisSize: MainAxisSize.min,
-                                       mainAxisAlignment: MainAxisAlignment.start,
-                                       children: [CustomImageView(
-                                           svgPath: ImageConstant.imgComputer,
-                                           height: getSize(24),
-                                           width: getSize(24)),
+                                         CustomImageView(
+                                             svgPath: ImageConstant.imgComputer,
+                                             height: getSize(25),
+                                             width: getSize(25)),
                                          Padding(
                                              padding: getPadding(top: 2),
                                              child: Text(
-                                                 "Chat",
+                                                 "Property",
                                                  overflow: TextOverflow.ellipsis,
                                                  textAlign: TextAlign.left,
                                                  style: AppStyle.txtHindMedium12))
@@ -1358,16 +1301,37 @@ Widget build(
                                )
                            ),
                            GestureDetector(
+                               onTap: () {onTapExploreicon(context);},
+                               child: Padding(
+                                   padding: getPadding(top: 15),
+                                   child: Column(
+                                       mainAxisSize: MainAxisSize.min,
+                                       mainAxisAlignment: MainAxisAlignment.start,
+                                       children: [CustomImageView(
+                                           svgPath: ImageConstant.imgCalendar10,
+                                           height: getSize(25),
+                                           width: getSize(25)),
+                                         Padding(
+                                             padding: getPadding(top: 2),
+                                             child: Text(
+                                                 "Booking",
+                                                 overflow: TextOverflow.ellipsis,
+                                                 textAlign: TextAlign.left,
+                                                 style: AppStyle.txtHindMedium12))]
+                                   )
+                               )
+                           ),
+                           GestureDetector(
                                onTap: () {onTapProfile(context);},
                                child:Padding(
-                                   padding: getPadding(top: 16),
+                                   padding: getPadding(top: 15),
                                    child: Column(
                                        mainAxisSize: MainAxisSize.min,
                                        mainAxisAlignment: MainAxisAlignment.start,
                                        children: [CustomImageView(
                                            svgPath: ImageConstant.imgUser,
-                                           height: getSize(24),
-                                           width: getSize(24)),
+                                           height: getSize(25),
+                                           width: getSize(25)),
                                          Padding(
                                              padding: getPadding(top: 2),
                                              child: Text(

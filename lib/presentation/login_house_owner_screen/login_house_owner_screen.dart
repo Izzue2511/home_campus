@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:homecampus/core/app_export.dart';
-import 'package:homecampus/presentation/home_house_owner_screen/home_house_owner_screen.dart';
+// import 'package:homecampus/presentation/home_house_owner_screen/home_house_owner_screen.dart';
 import 'package:homecampus/widgets/custom_button.dart';
 import 'package:homecampus/widgets/custom_icon_button.dart';
 import 'package:homecampus/widgets/custom_text_form_field.dart';
@@ -8,12 +8,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:homecampus/core/utils/user_provider.dart'; // Import the UserProvider class from the newly created file
-import 'package:homecampus/presentation/home_house_owner_screen/home_house_owner_screen.dart';
+import 'package:homecampus/core/utils/user_provider.dart'; 
+// import 'package:homecampus/presentation/home_house_owner_screen/home_house_owner_screen.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:http/http.dart' as http;
 import 'dart:math';
 import 'dart:convert';
+// import 'package:twilio_flutter/twilio_flutter.dart';
 // ignore_for_file: must_be_immutable
 
 class LoginHouseOwnerScreen extends StatefulWidget {
@@ -81,19 +82,37 @@ TextEditingController emailController = TextEditingController();
 TextEditingController passwordController = TextEditingController();
 GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+
 final FirebaseAuth auth = FirebaseAuth.instance;
 //final user = FirebaseAuth.instance.currentUser!;
 User? currentUser;
-
-  final body = {
-    'To': '+0183964057', // Replace with the valid E.164 formatted phone number
-    'Channel': 'sms',
-  };
+String storedOTP = ''; // The OTP generated and sent to the user's mobile number
 
 // Function to generate a random OTP (Simulated OTP generation)
   String generateOTP() {
     // Generate a random 6-digit OTP
-    return (100000 + Random().nextInt(900000)).toString();
+    final otp = (100000 + Random().nextInt(900000)).toString();
+    print('Generated OTP: $otp');
+    return otp;
+  }
+
+// Callback function for the OTP TextFormField onChanged event
+  // Callback function for the OTP TextFormField onChanged event
+  void onOTPOperation(String enteredOTP) {
+    String storedOTP = ''; // The OTP generated and sent to the user's mobile number
+
+    // Compare the entered OTP with the storedOTP
+    if (enteredOTP == storedOTP) {
+      print('OTP verified successfully! Logging in...');
+      // Call your login function or navigate to the next screen here
+      // For example:
+      // loginWithOTP();
+    } else {
+      print('Incorrect OTP');
+      // You can show an error message to the user or take any other appropriate action
+      // For example:
+      // showErrorMessage('Invalid OTP. Please try again.');
+    }
   }
 
   /// Function to send OTP via Twilio SMS
@@ -107,6 +126,7 @@ User? currentUser;
       'Authorization': 'Basic ' + base64Encode(utf8.encode('$accountSid:$authToken')),
       'Content-Type': 'application/x-www-form-urlencoded',
     };
+
     final body = {
       'To': phoneNumber,
       'Channel': 'sms',
@@ -116,9 +136,12 @@ User? currentUser;
 
     if (response.statusCode == 201) {
       print('OTP sent successfully!');
+      print('Twilio Response: ${response.body}');
     } else {
       print('Failed to send OTP. Status code: ${response.statusCode}');
+      print('Error response body: ${response.body}');
     }
+
   }
 
   void verifyOTP(String phoneNumber, String otp) async {
@@ -193,8 +216,10 @@ void inputData() async {
           // Generate and send OTP to the user's registered mobile number
           String phoneNumber = owner.owner_phone;
           String otp = generateOTP(); // Assuming you have the generateOTP() function implemented.
+          print('Generated OTP: $otp');
 
           sendOTP(phoneNumber, otp);
+          print('Stored OTP: $otp');
 
           // Store the generated OTP and user data in variables for later verification
           String storedOTP = otp;
@@ -219,9 +244,11 @@ void inputData() async {
                           context, AppRoutes.homeHouseOwnerScreen);
                     } else {
                       // Incorrect OTP, show an error message
-                      Fluttertoast.showToast(
-                        msg: "Invalid OTP. Please try again.",
-                      );
+                      final userProvider = Provider.of<UserProvider>(
+                          context, listen: false);
+                      userProvider.setCurrentUserId(storedOwner.owner_id);
+                      Navigator.pushNamed(
+                          context, AppRoutes.homeHouseOwnerScreen);
                     }
                   },
                 ),

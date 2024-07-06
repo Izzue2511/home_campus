@@ -1,16 +1,16 @@
-import '../details_house_screen/widgets/slidershadow_item_widget.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+
+// import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:homecampus/core/app_export.dart';
 import 'package:homecampus/widgets/custom_button.dart';
 import 'package:homecampus/widgets/custom_icon_button.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+// import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:homecampus/core/utils/user_provider.dart';
-import 'package:homecampus/routes/app_routes.dart';
+// import 'package:homecampus/routes/app_routes.dart';
 // ignore_for_file: must_be_immutable
 
 class DetailsHouseScreen extends StatefulWidget {
@@ -254,20 +254,25 @@ class _DetailsHouseScreenState extends State<DetailsHouseScreen> {
                                                child: Stack(
                                                    alignment: Alignment.bottomCenter,
                                                    children: [
-                                                    CarouselSlider.builder(
-                                                        options: CarouselOptions(
-                                                            height: getVerticalSize(290),
-                                                            //initialPage: 0, autoPlay: true,
-                                                            viewportFraction: 1.0,
-                                                            //enableInfiniteScroll: false,
-                                                            //scrollDirection: Axis.horizontal,
-                                                            //onPageChanged: (index, reason) {silderIndex = index;}
-                                                        ),
-                                                        itemCount: 1,
-                                                        itemBuilder: (context, index, realIndex) {
-                                                         return SlidershadowItemWidget(
-                                                         );
-                                                        }
+                                                    Container(
+                                                     height: getVerticalSize(290),
+                                                     width: getHorizontalSize(369),
+                                                     child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(
+                                                          getHorizontalSize(20)),
+                                                      child: Image.network(
+                                                       property.property_image ?? '',
+                                                       height: getVerticalSize(235),
+                                                       width: getHorizontalSize(340),
+                                                       fit: BoxFit.cover,
+                                                       errorBuilder: (context, error, stackTrace) {
+                                                        return Icon(
+                                                         Icons.error_outline,
+                                                         size: getHorizontalSize(40),
+                                                        );
+                                                       },
+                                                      ),
+                                                     ),
                                                     ),
                                                     Align(
                                                         alignment: Alignment.centerLeft,
@@ -638,70 +643,6 @@ class _DetailsHouseScreenState extends State<DetailsHouseScreen> {
                                        },
                                       ),
                                      ),
-                                    ),
-                                   ),
-                                   Positioned(
-                                    top: 750.0,
-                                    //- (displayIcons.where((display) => display).length * 20).toDouble(),
-                                    left: 25,
-                                    child: Align(
-                                     alignment: Alignment.centerLeft,
-                                     child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                       Text(
-                                        "Location",
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.left,
-                                        style: AppStyle.txtRalewaySemiBold20,
-                                       ),
-                                      ],
-                                     ),
-                                    ),
-                                   ),
-                                   Container(
-                                    margin: EdgeInsets.only(
-                                     top: 680.0,
-                                     //- (displayIcons.where((display) => display).length * 40).toDouble(),
-                                    ),
-                                    child: Align(
-                                        child: Container(
-                                            height: getVerticalSize(274),
-                                            width: getHorizontalSize(368),
-                                            child: Stack(
-                                                alignment: Alignment.bottomRight,
-                                                children: [CustomImageView(
-                                                    imagePath: ImageConstant.imgRectangle,
-                                                    height: getVerticalSize(274),
-                                                    width: getHorizontalSize(368),
-                                                    alignment: Alignment.center),
-                                                 Align(
-                                                     alignment: Alignment.bottomRight,
-                                                     child: Padding(
-                                                         padding: getPadding(right: 11, bottom: 8),
-                                                         child: Column(
-                                                             mainAxisSize: MainAxisSize.min,
-                                                             crossAxisAlignment: CrossAxisAlignment.start,
-                                                             mainAxisAlignment: MainAxisAlignment.start,
-                                                             children: [CustomImageView(
-                                                                 imagePath: ImageConstant.imgLocation30x30,
-                                                                 height: getSize(30),
-                                                                 width: getSize(30)),
-                                                              CustomImageView(
-                                                                  svgPath: ImageConstant.imgVolumeIndigoA100,
-                                                                  height: getSize(28),
-                                                                  width: getSize(28),
-                                                                  alignment: Alignment.centerRight,
-                                                                  margin: getMargin(top: 110))
-                                                             ]
-                                                         )
-                                                     )
-                                                 )
-                                                ]
-                                            )
-                                        )
                                     ),
                                    ),
                                    Align(

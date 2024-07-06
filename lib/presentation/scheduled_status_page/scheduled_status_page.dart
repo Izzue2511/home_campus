@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:homecampus/core/utils/user_provider.dart';
-import 'package:homecampus/routes/app_routes.dart';
+// import 'package:homecampus/routes/app_routes.dart';
 // ignore_for_file: must_be_immutable
 
 class ScheduledStatusPage extends StatefulWidget {
@@ -232,12 +232,25 @@ class _ScheduledStatusPageState extends State<ScheduledStatusPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CustomImageView(
-                              imagePath: 'assets/images/house_1.jpg',
-                              height: getVerticalSize(130),
-                              width: getHorizontalSize(130),
-                              radius: BorderRadius.circular(
-                                  getHorizontalSize(20))
+                          Container(
+                            height: getVerticalSize(130),
+                            width: getHorizontalSize(139),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  getHorizontalSize(20)),
+                              child: Image.network(
+                                property.property_image ?? '',
+                                height: getVerticalSize(130),
+                                width: getHorizontalSize(130),
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Icon(
+                                    Icons.error_outline,
+                                    size: getHorizontalSize(40),
+                                  );
+                                },
+                              ),
+                            ),
                           ),
                           Padding(
                               padding: getPadding(bottom: 5),
@@ -398,12 +411,25 @@ class _ScheduledStatusPageState extends State<ScheduledStatusPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomImageView(
-                            imagePath: 'assets/images/house_1.jpg',
-                            height: getVerticalSize(130),
-                            width: getHorizontalSize(130),
-                            radius: BorderRadius.circular(
-                                getHorizontalSize(20))
+                        Container(
+                          height: getVerticalSize(130),
+                          width: getHorizontalSize(139),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                getHorizontalSize(20)),
+                            child: Image.network(
+                              property.property_image ?? '',
+                              height: getVerticalSize(130),
+                              width: getHorizontalSize(130),
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(
+                                  Icons.error_outline,
+                                  size: getHorizontalSize(40),
+                                );
+                              },
+                            ),
+                          ),
                         ),
                         Padding(
                             padding: getPadding(bottom: 5),
@@ -564,12 +590,25 @@ class _ScheduledStatusPageState extends State<ScheduledStatusPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomImageView(
-                            imagePath: 'assets/images/house_1.jpg',
-                            height: getVerticalSize(130),
-                            width: getHorizontalSize(130),
-                            radius: BorderRadius.circular(
-                                getHorizontalSize(20))
+                        Container(
+                          height: getVerticalSize(130),
+                          width: getHorizontalSize(139),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                getHorizontalSize(20)),
+                            child: Image.network(
+                              property.property_image ?? '',
+                              height: getVerticalSize(130),
+                              width: getHorizontalSize(130),
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(
+                                  Icons.error_outline,
+                                  size: getHorizontalSize(40),
+                                );
+                              },
+                            ),
+                          ),
                         ),
                         Padding(
                             padding: getPadding(bottom: 5),

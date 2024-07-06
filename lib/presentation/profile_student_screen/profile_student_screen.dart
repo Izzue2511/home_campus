@@ -200,13 +200,6 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
                                         ),
                                       ),
                                   ),
-                                  CustomImageView(
-                                      imagePath: ImageConstant.imgUnsplashjmurdhtm7ng130x130,
-                                      height: getSize(130),
-                                      width: getSize(130),
-                                      radius: BorderRadius.circular(
-                                          getHorizontalSize(65)),
-                                      alignment: Alignment.bottomCenter)
                                 ]
                             )
                         ),

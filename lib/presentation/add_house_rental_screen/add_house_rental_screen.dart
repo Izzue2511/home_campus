@@ -1,34 +1,34 @@
-import 'dart:typed_data';
+// import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:homecampus/core/utils/network_utility.dart';
+// import 'package:homecampus/core/utils/network_utility.dart';
 import '../add_house_rental_screen/widgets/add_house_item_widget.dart';
 import '../add_house_rental_screen/widgets/add_house_item_widget2.dart';
-import 'package:homecampus/core/utils/place_auto_complate_response.dart';
-import 'package:homecampus/core/utils/autocomplate_prediction.dart';
-import 'package:homecampus/widgets/location_list_tile.dart';
+// import 'package:homecampus/core/utils/place_auto_complate_response.dart';
+// import 'package:homecampus/core/utils/autocomplate_prediction.dart';
+// import 'package:homecampus/widgets/location_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:path/path.dart';
-import 'package:async/async.dart';
-import 'package:http/http.dart' as http;
+// import 'package:async/async.dart';
+// import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:convert';
-import 'package:firebase_core/firebase_core.dart';
+// import 'dart:convert';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:homecampus/core/app_export.dart';
 import 'package:homecampus/widgets/custom_button.dart';
 import 'package:homecampus/widgets/custom_icon_button.dart';
 import 'package:homecampus/widgets/custom_text_form_field.dart';
-import 'package:homecampus/presentation/face_verify_add_property_bottomsheet/face_verify_add_property_bottomsheet.dart';
+// import 'package:homecampus/presentation/face_verify_add_property_bottomsheet/face_verify_add_property_bottomsheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:homecampus/core/utils/user_provider.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
+// import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 // ignore_for_file: must_be_immutable
 
 class AddHouseRentalScreen extends StatefulWidget {
@@ -40,7 +40,7 @@ class AddHouseRentalScreen extends StatefulWidget {
 class Rental_Property{
   String property_id;
   String owner_id;
-  final String property_image;
+  String? property_image;
   final String property_name;
   final String property_description;
   final String property_address;
@@ -148,7 +148,7 @@ class _AddHouseRentalScreenState extends State<AddHouseRentalScreen> {
   void inputData() async {
     currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
-      final currentUserId = currentUser!.uid;
+      // final currentUserId = currentUser!.uid;
       // Here you have the current user ID (uid), and you can use it as needed.
       // For example, you can pass it to the `getUserByMatricNumber` function.
       setState(() {
@@ -205,9 +205,28 @@ bool pressedDt = false;
 bool pressedLk = false;
 
   Future<void> createProperty(Rental_Property property, String ownerID) async {
-    final docProperty = FirebaseFirestore.instance.collection('rental_property').doc();
-    property.property_id = docProperty.id; // Assign the document ID to the property_id field
+    if (image != null) {
+      final imagePath = image!.path;
+      final imageFileName = basename(imagePath);
+
+      // Upload the image to Firebase Storage
+      final storageRef = firebase_storage.FirebaseStorage.instance.ref().child('property_images/$imageFileName');
+      final uploadTask = storageRef.putFile(File(imagePath));
+
+      // Get the download URL of the uploaded image
+      final downloadURL = await (await uploadTask).ref.getDownloadURL();
+
+      // Use the public download URL for the property_image field
+      property.property_image = downloadURL;
+    }
+
     property.owner_id = ownerID; // Set the house owner's ID (foreign key)
+
+    // Add the property to Firestore
+    final collectionRef = FirebaseFirestore.instance.collection('rental_property');
+    final docProperty = collectionRef.doc(); // Create a new document reference
+
+    property.property_id = docProperty.id; // Assign the document ID to the property_id field
 
     final json = property.toJson();
     await docProperty.set(json);
@@ -218,14 +237,11 @@ bool pressedLk = false;
 
   Future<void> pickImage() async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (image == null) return;
+      final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedImage == null) return;
 
-      final imagePermanent = await saveImagePermanently(image.path);
-      final path = imagePermanent.path;
       setState(() {
-        this.image = imagePermanent;
-        imagePath = path;
+        image = File(pickedImage.path);
       });
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
@@ -1298,7 +1314,7 @@ Widget build(
                                           true) {
                                         // Proceed with account creation
                                         final property = Rental_Property(
-                                          property_image: imagePath!,
+                                          property_image: imagePath,
                                           property_name: nameController.text,
                                           property_description: descriptionController
                                               .text,

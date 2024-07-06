@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:homecampus/core/app_export.dart';
 import 'package:homecampus/presentation/home_admin_screen/home_admin_screen.dart';
-import 'package:homecampus/presentation/home_house_owner_screen/home_house_owner_screen.dart';
-import 'package:homecampus/presentation/register_house_owner_screen/register_house_owner_screen.dart';
+// import 'package:homecampus/presentation/home_house_owner_screen/home_house_owner_screen.dart';
+// import 'package:homecampus/presentation/register_house_owner_screen/register_house_owner_screen.dart';
 import 'package:homecampus/widgets/custom_button.dart';
 import 'package:homecampus/widgets/custom_icon_button.dart';
 import 'package:homecampus/widgets/custom_text_form_field.dart';

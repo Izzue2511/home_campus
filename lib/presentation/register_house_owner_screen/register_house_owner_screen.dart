@@ -5,7 +5,7 @@ import 'package:homecampus/widgets/custom_icon_button.dart';
 import 'package:homecampus/widgets/custom_text_form_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
-import 'package:homecampus/core/utils/aes_helper.dart';
+// import 'package:homecampus/core/utils/aes_helper.dart';
 // ignore_for_file: must_be_immutable
 
 class RegisterHouseOwnerScreen extends StatefulWidget {
@@ -95,12 +95,12 @@ bool passToggle = true;
         owner_name: fullnameController.text,
         owner_address: addressController.text,
         owner_email: emailController.text,
-        owner_phone: phoneNumController.text,
+        owner_phone: "+6" + phoneNumController.text,
         owner_password: passwordController.text,
         owner_image: "",
-        owner_accountBank: "",
-        owner_accountNo: "",
-        owner_accountHolder: "",
+        owner_accountBank: "No Account Bank",
+        owner_accountNo: "No Account Number",
+        owner_accountHolder: "No Account Holder",
       );
 
       // Encrypt the password before saving it to Firebase

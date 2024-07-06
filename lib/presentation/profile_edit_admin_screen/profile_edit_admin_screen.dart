@@ -126,30 +126,6 @@ Widget buildAdmin (Admin admin, String currentUserId) => Column(
                                       )
                                   )
                               ),
-                              Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                      height: getSize(142),
-                                      width: getSize(142),
-                                      child: Stack(
-                                          alignment: Alignment.bottomRight,
-                                          children: [CustomImageView(
-                                              imagePath: ImageConstant.imgUnsplashjmurdhtm7ng,
-                                              height: getSize(142),
-                                              width: getSize(142),
-                                              radius: BorderRadius.circular(
-                                                  getHorizontalSize(71)),
-                                              alignment: Alignment.center),
-                                            CustomImageView(
-                                                svgPath: ImageConstant.imgEdit,
-                                                height: getSize(24),
-                                                width: getSize(24),
-                                                alignment: Alignment.bottomRight,
-                                                margin: getMargin(right: 22, bottom: 24))
-                                          ]
-                                      )
-                                  )
-                              )
                             ]
                         )
                     ),

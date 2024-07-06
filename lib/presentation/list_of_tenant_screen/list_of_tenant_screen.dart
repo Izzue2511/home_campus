@@ -9,113 +9,57 @@ import 'package:homecampus/core/utils/user_provider.dart';
 // import 'package:homecampus/routes/app_routes.dart';
 // ignore_for_file: must_be_immutable
 
-class HomeAdminScreen extends StatefulWidget {
+class ListOfTenantScreen extends StatefulWidget {
   @override
-  _HomeAdminScreenState createState() => _HomeAdminScreenState();
+  _ListOfTenantScreenState createState() => _ListOfTenantScreenState();
 }
 
-class Rental_Property{
-  String property_id;
-  String owner_id;
-  final String property_image;
-  final String property_name;
-  final String property_description;
-  final String property_address;
-  final String property_bedroom;
-  final String property_bathroom;
-  final int property_price;
-  final bool air_conditioner;
-  final bool washing_machine;
-  final bool fridge;
-  final bool gas_stove;
-  final bool wifi;
-  final bool kettle;
-  final bool rice_cooker;
-  final bool clothes_hanger;
-  final bool study_table;
-  final bool dining_table;
-  final bool locker;
-  final bool property_availability;
+class Tenant{
+  String tenant_id;
+  final String tenant_name;
+  final String tenant_address;
+  final String tenant_email;
+  final String tenant_phone;
+  final String tenant_matricNum;
+  final String tenant_password;
 
-  Rental_Property({
-    this.property_id = '',
-    required this.owner_id,
-    required this.property_image,
-    required this.property_name,
-    required this.property_description,
-    required this.property_address,
-    required this.property_bedroom,
-    required this.property_bathroom,
-    required this.property_price,
-    required this.air_conditioner,
-    required this.washing_machine,
-    required this.fridge,
-    required this.gas_stove,
-    required this.wifi,
-    required this.kettle,
-    required this.rice_cooker,
-    required this.clothes_hanger,
-    required this.study_table,
-    required this.dining_table,
-    required this.locker,
-    required this.property_availability,
+  Tenant({
+    this.tenant_id = '',
+    required this.tenant_name,
+    required this.tenant_address,
+    required this.tenant_email,
+    required this.tenant_phone,
+    required this.tenant_matricNum,
+    required this.tenant_password,
   });
 
   Map<String, dynamic> toJson() => {
-    'property_id': property_id,
-    'owner_id': owner_id,
-    'property_image': property_image,
-    'property_name': property_name,
-    'property_description': property_description,
-    'property_address': property_address,
-    'property_bedroom': property_bedroom,
-    'property_bathroom': property_bathroom,
-    'property_price': property_price,
-    'air_conditioner': air_conditioner,
-    'washing_machine': washing_machine,
-    'fridge': fridge,
-    'gas_stove': gas_stove,
-    'wifi': wifi,
-    'kettle': kettle,
-    'rice_cooker': rice_cooker,
-    'clothes_hanger': clothes_hanger,
-    'study_table': study_table,
-    'dining_table': dining_table,
-    'locker': locker,
-    'property_availability': property_availability,
+    'tenant_id': tenant_id,
+    'tenant_name': tenant_name,
+    'tenant_address': tenant_address,
+    'tenant_email': tenant_email,
+    'tenant_phone': tenant_phone,
+    'tenant_matricNum': tenant_matricNum,
+    'tenant_password': tenant_password,
   };
 
-  static Rental_Property fromJson(Map<String, dynamic> json) => Rental_Property(
-      property_id: json['property_id'],
-      owner_id: json['owner_id'],
-      property_image: json['property_image'],
-      property_name: json['property_name'],
-      property_description: json['property_description'],
-      property_address: json['property_address'],
-      property_bedroom: json['property_bedroom'],
-      property_bathroom: json['property_bathroom'],
-      property_price: json['property_price'],
-      air_conditioner: json['air_conditioner'],
-      washing_machine: json['washing_machine'],
-      fridge: json['fridge'],
-      gas_stove: json['gas_stove'],
-      wifi: json['wifi'],
-      kettle: json['kettle'],
-      rice_cooker: json['rice_cooker'],
-      clothes_hanger: json['clothes_hanger'],
-      study_table: json['study_table'],
-      dining_table: json['dining_table'],
-      locker: json['locker'],
-      property_availability: json['property_availability']
+  static Tenant fromJson(Map<String, dynamic> json) => Tenant(
+    tenant_id: json['tenant_id'],
+    tenant_name: json['tenant_name'],
+    tenant_address: json['tenant_address'],
+    tenant_email: json['tenant_email'],
+    tenant_phone: json['tenant_phone'],
+    tenant_matricNum: json['tenant_matricNum'],
+    tenant_password: json['tenant_password'],
   );
 }
 
-class _HomeAdminScreenState extends State<HomeAdminScreen> {
+class _ListOfTenantScreenState extends State<ListOfTenantScreen> {
 
   TextEditingController searchController = TextEditingController();
   final FirebaseAuth auth = FirebaseAuth.instance;
   User? currentUser;
-  String? propertyId; // Remove the existing declaration
+  String? tenantId; // Remove the existing declaration
 
   @override
   void initState() {
@@ -128,23 +72,18 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
     setState(() {});
   }
 
-  List<Rental_Property> filterProperties(List<Rental_Property> properties, String keyword) {
-    return properties.where((property) {
+  List<Tenant> filterProperties(List<Tenant> tenants, String keyword) {
+    return tenants.where((tenant) {
       // Perform filtering based on multiple criteria
-      bool nameMatch = property.property_name.toLowerCase().contains(keyword.toLowerCase());
-      bool locationMatch = property.property_address.toLowerCase().contains(keyword.toLowerCase());
-      bool priceMatch = property.property_price.toString().contains(keyword.toLowerCase());
-      bool bedroomMatch = property.property_bedroom.toLowerCase().contains(keyword.toLowerCase());
-      bool bathroomMatch = property.property_bathroom.toLowerCase().contains(keyword.toLowerCase());
-
+      bool nameMatch = tenant.tenant_name.toLowerCase().contains(keyword.toLowerCase());
       // Return true if any of the filtering criteria match
-      return nameMatch || locationMatch || priceMatch || bedroomMatch || bathroomMatch;
+      return nameMatch;
     }).toList();
   }
 
   void inputData() async {
-    propertyId = Provider.of<UserProvider>(context).propertyId;
-    print('Property ID: $propertyId'); // Add this line to print the propertyId
+    //tenantId = Provider.of<UserProvider>(context).tenantId;
+    print('Tenant ID: $tenantId'); // Add this line to print the propertyId
     currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       final currentUserId = currentUser!.uid;
@@ -163,13 +102,13 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
     return auth.currentUser != null;
   }
 
-  void onTapPropertyDetails(BuildContext context, String propertyId) {
-    print('Selected Property ID: $propertyId');
-    Provider.of<UserProvider>(context, listen: false).setPropertyId(propertyId);
-    Navigator.pushNamed(context, '/admin_rental_property_details_screen', arguments: propertyId);
+  void onTapTenantDetails(BuildContext context, String tenantId) {
+    print('Selected Tenant ID: $tenantId');
+    //Provider.of<UserProvider>(context, listen: false).setTenantId(tenantId);
+    Navigator.pushNamed(context, '/admin_rental_property_details_screen', arguments: tenantId);
   }
 
-  Widget buildProperty (Rental_Property property) => Container(
+  Widget buildTenant (Tenant tenant) => Container(
       margin: getMargin(left: 25, top: 25, right: 25),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
@@ -196,8 +135,8 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
               child: GestureDetector(
                 // Code where you are navigating to DetailsHouseRentalScreen
                   onTap: () {
-                    final propertyId = property.property_id;
-                    onTapPropertyDetails(context, propertyId);
+                    final tenantId = tenant.tenant_id;
+                    onTapTenantDetails(context, tenantId);
                   },
                   child: Container(
                       padding: getPadding(left: 12, top: 11, right: 12, bottom: 11),
@@ -214,22 +153,6 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
                                     Container(
                                       height: getVerticalSize(235),
                                       width: getHorizontalSize(340),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(
-                                            getHorizontalSize(20)),
-                                        child: Image.network(
-                                          property.property_image ?? '',
-                                          height: getVerticalSize(235),
-                                          width: getHorizontalSize(340),
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) {
-                                            return Icon(
-                                              Icons.error_outline,
-                                              size: getHorizontalSize(40),
-                                            );
-                                          },
-                                        ),
-                                      ),
                                     ),
                                   ]
                               )
@@ -241,7 +164,7 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
                                     children: [Padding(
                                         padding: getPadding(top: 2, bottom: 3),
                                         child: Text(
-                                            property.property_name,
+                                            tenant.tenant_name,
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.left,
                                             style: AppStyle.txtRalewayMedium16)),
@@ -251,7 +174,7 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
                                           child: Row(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [Text(
-                                                "RM" + property.property_price.toString(),
+                                                "RM",
                                                 overflow: TextOverflow.ellipsis,
                                                 textAlign: TextAlign.left,
                                                 style: AppStyle.txtMontserratSemiBold12.copyWith(letterSpacing: getHorizontalSize(0.36)),
@@ -296,12 +219,6 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
                                           margin: getMargin(left: 140, top: 7, bottom: 3)),
                                       Padding(
                                           padding: getPadding(left: 6, top: 6, bottom: 2),
-                                          child: Text(
-                                              property.property_bedroom,
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: AppStyle.txtSFProDisplayRegular13IndigoA100.copyWith(letterSpacing: getHorizontalSize(0.13),                                                                  )
-                                          )
                                       ),
                                       CustomImageView(
                                           svgPath: ImageConstant.imgIcbath,
@@ -310,12 +227,6 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
                                           margin: getMargin(left: 6,bottom: 1)),
                                       Padding(
                                           padding: getPadding(left: 6, top: 6, bottom: 1),
-                                          child: Text(
-                                            property.property_bathroom,
-                                            overflow: TextOverflow.ellipsis,
-                                            textAlign: TextAlign.left,
-                                            style: AppStyle.txtSFProDisplayRegular13IndigoA100.copyWith(letterSpacing: getHorizontalSize(0.13)),
-                                          )
                                       ),
                                     ]
                                 )
@@ -329,11 +240,11 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
       )
   );
 
-  Stream<List<Rental_Property>> readProperty() => FirebaseFirestore.instance
-      .collection('rental_property')
+  Stream<List<Tenant>> readTenant() => FirebaseFirestore.instance
+      .collection('tenant')
       .snapshots()
       .map((snapshot) =>
-        snapshot.docs.map((doc) => Rental_Property.fromJson(doc.data())).toList());
+        snapshot.docs.map((doc) => Tenant.fromJson(doc.data())).toList());
 
   @override
 Widget build(
@@ -393,7 +304,7 @@ Widget build(
                                                           child: TextField(
                                                             controller: searchController,
                                                             decoration: InputDecoration(
-                                                              hintText: "Search House, Apartment, etc",
+                                                              hintText: "Search Tenant",
                                                               border: InputBorder.none,
                                                             ),
                                                             style: AppStyle.txtRalewayRegular12Indigo200.copyWith(
@@ -436,29 +347,29 @@ Widget build(
                              child: Padding(
                                  padding: getPadding(left: 37, top: 12),
                                  child: Text(
-                                     "List of Rental Property",
+                                     "List of Tenant",
                                      overflow: TextOverflow.ellipsis,
                                      textAlign: TextAlign.left,
                                      style: AppStyle.txtPoppinsSemiBold24)
                              )
                          ),
-                          StreamBuilder<List<Rental_Property>>(
-                            stream: readProperty(),
+                          StreamBuilder<List<Tenant>>(
+                            stream: readTenant(),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
                                 return Center(child: CircularProgressIndicator());
                               } else if (snapshot.hasError) {
                                 return Text('Something went wrong! ${snapshot.error}');
                               } else if (snapshot.hasData) {
-                                final rentalPropertyList = snapshot.data!;
-                                final filteredList = filterProperties(rentalPropertyList, searchController.text);
+                                final tenantList = snapshot.data!;
+                                final filteredList = filterProperties(tenantList, searchController.text);
                                 return ListView.builder(
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemCount: filteredList.length,
                                   itemBuilder: (context, index) {
-                                    final rentalProperty = filteredList[index];
-                                    return buildProperty(rentalProperty); // Replace with your implementation of buildProperty
+                                    final tenant = filteredList[index];
+                                    return buildTenant(tenant); // Replace with your implementation of buildProperty
                                   },
                                 );
                               } else {
@@ -586,7 +497,7 @@ Widget build(
 onTapImgSearch(
     BuildContext context) { Navigator.pushNamed(context, AppRoutes.searchScreenOwnerScreen); }
 onTapExploreicon(
-    BuildContext context) { Navigator.pushNamed(context, AppRoutes.listOfTenantScreen); }
+    BuildContext context) { Navigator.pushNamed(context, AppRoutes.scheduledRequestedScreen); }
 onTapChat(
     BuildContext context) { Navigator.pushNamed(context, AppRoutes.chatOwnerScreen); }
 onTapProfile(

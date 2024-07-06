@@ -1,16 +1,16 @@
-import '../details_house_screen/widgets/slidershadow_item_widget.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+//import '../details_house_screen/widgets/slidershadow_item_widget.dart';
+// import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:homecampus/core/app_export.dart';
-import 'package:homecampus/widgets/custom_button.dart';
+// import 'package:homecampus/widgets/custom_button.dart';
 import 'package:homecampus/widgets/custom_icon_button.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+// import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:homecampus/core/utils/user_provider.dart';
-import 'package:homecampus/routes/app_routes.dart';
+// import 'package:homecampus/routes/app_routes.dart';
 // ignore_for_file: must_be_immutable
 
 class AdminRentalPropertyDetailsScreen extends StatefulWidget {
@@ -185,7 +185,7 @@ class _AdminRentalPropertyDetailsScreenState extends State<AdminRentalPropertyDe
   print('Property ID: $propertyIdArg');
   currentUser = FirebaseAuth.instance.currentUser;
   if (currentUser != null) {
-   final currentUserId = currentUser!.uid;
+  //  final currentUserId = currentUser!.uid;
 
    setState(() {
     // Call setState to trigger a rebuild if needed.
@@ -248,19 +248,25 @@ class _AdminRentalPropertyDetailsScreenState extends State<AdminRentalPropertyDe
                                                child: Stack(
                                                    alignment: Alignment.bottomCenter,
                                                    children: [
-                                                    CarouselSlider.builder(
-                                                        options: CarouselOptions(
-                                                            height: getVerticalSize(290),
-                                                            initialPage: 0, autoPlay: true,
-                                                            viewportFraction: 1.0,
-                                                            enableInfiniteScroll: false,
-                                                            scrollDirection: Axis.horizontal,
-                                                            onPageChanged: (index, reason) {silderIndex = index;}),
-                                                        itemCount: 1,
-                                                        itemBuilder: (context, index, realIndex) {
-                                                         return SlidershadowItemWidget(
-                                                         );
-                                                        }
+                                                    Container(
+                                                     height: getVerticalSize(290),
+                                                     width: getHorizontalSize(369),
+                                                     child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(
+                                                          getHorizontalSize(20)),
+                                                      child: Image.network(
+                                                       property.property_image,
+                                                       height: getVerticalSize(235),
+                                                       width: getHorizontalSize(340),
+                                                       fit: BoxFit.cover,
+                                                       errorBuilder: (context, error, stackTrace) {
+                                                        return Icon(
+                                                         Icons.error_outline,
+                                                         size: getHorizontalSize(40),
+                                                        );
+                                                       },
+                                                      ),
+                                                     ),
                                                     ),
                                                     Align(
                                                         alignment: Alignment.centerLeft,

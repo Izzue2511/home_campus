@@ -22,6 +22,10 @@ class House_Owner{
   final String owner_email;
   final String owner_phone;
   final String owner_password;
+  final String owner_image;
+  final String owner_accountBank;
+  final String owner_accountNo;
+  final String owner_accountHolder;
 
   House_Owner({
     this.owner_id = '',
@@ -30,7 +34,23 @@ class House_Owner{
     required this.owner_email,
     required this.owner_phone,
     required this.owner_password,
+    required this.owner_image,
+    required this.owner_accountBank,
+    required this.owner_accountNo,
+    required this.owner_accountHolder,
   });
+
+  House_Owner.fromJson(Map<String, dynamic> json)
+      : owner_id = json['owner_id'],
+        owner_name = json['owner_name'],
+        owner_address = json['owner_address'],
+        owner_email = json['owner_email'],
+        owner_phone = json['owner_phone'],
+        owner_password = json['owner_password'],
+        owner_image = json['owner_image'],
+        owner_accountBank = json['owner_accountBank'],
+        owner_accountNo = json['owner_accountNo'],
+        owner_accountHolder = json['owner_accountHolder'];
 
   Map<String, dynamic> toJson() => {
     'owner_id': owner_id,
@@ -39,16 +59,11 @@ class House_Owner{
     'owner_email': owner_email,
     'owner_phone': owner_phone,
     'owner_password': owner_password,
+    'owner_image': owner_image,
+    'owner_accountBank': owner_accountBank,
+    'owner_accountNo': owner_accountNo,
+    'owner_accountHolder': owner_accountHolder,
   };
-
-  static House_Owner fromJson(Map<String, dynamic> json) => House_Owner(
-    owner_id: json['owner_id'],
-    owner_name: json['owner_name'],
-    owner_address: json['owner_address'],
-    owner_email: json['owner_email'],
-    owner_phone: json['owner_phone'],
-    owner_password: json['owner_password'],
-  );
 }
 
 class _ProfileEditOwnerScreenState extends State<ProfileEditOwnerScreen> {
@@ -66,13 +81,10 @@ class _ProfileEditOwnerScreenState extends State<ProfileEditOwnerScreen> {
     currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       final currentUserId = currentUser!.uid;
-      // Here you have the current user ID (uid), and you can use it as needed.
-      // For example, you can pass it to the `getUserByMatricNumber` function.
+
       setState(() {
-        // Call setState to trigger a rebuild if needed.
       });
     } else {
-      // Handle the case where the user is null, such as showing an error message or redirecting to the login screen.
     }
   }
 
@@ -96,7 +108,6 @@ class _ProfileEditOwnerScreenState extends State<ProfileEditOwnerScreen> {
     return decrypted;
   }
 
-// Function to check if the user is authenticated
   bool isUserAuthenticated() {
     return auth.currentUser != null;
   }
@@ -106,6 +117,9 @@ TextEditingController addressController = TextEditingController();
 TextEditingController emailController = TextEditingController();
 TextEditingController mobileController = TextEditingController();
 TextEditingController passwordController = TextEditingController();
+TextEditingController bankController = TextEditingController();
+TextEditingController accountController = TextEditingController();
+TextEditingController holderController = TextEditingController();
 
 GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -265,6 +279,61 @@ Widget buildOwner (House_Owner owner, String currentUserId,String decryptedPassw
                         margin: getMargin(left: 48, right: 48),
                         padding: TextFormFieldPadding.PaddingAll11,
                         textInputAction: TextInputAction.done),
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                            padding: getPadding(left: 54, top: 15, bottom: 5),
+                            child: Text(
+                                "Account Bank",
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.left,
+                                style: AppStyle.txtPoppinsMedium14))),
+                    CustomTextFormField(
+                        focusNode: FocusNode(),
+                        autofocus: true,
+                        controller: bankController,
+                        hintText: owner.owner_accountBank,
+                        maxLines: null,
+                        margin: getMargin(left: 48, right: 48),
+                        padding: TextFormFieldPadding.PaddingAll11),
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                            padding: getPadding(left: 54, top: 15, bottom: 5),
+                            child: Text(
+                                "Account No",
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.left,
+                                style: AppStyle.txtPoppinsMedium14))),
+                    Container(
+                      width: getHorizontalSize(430),
+                      margin: getMargin(top: 0),
+                      child: CustomTextFormField(
+                          focusNode: FocusNode(),
+                          autofocus: true,
+                          controller: accountController,
+                          hintText: owner.owner_accountNo,
+                          maxLines: 2,
+                          margin: getMargin(left: 48, right: 48),
+                          padding: TextFormFieldPadding.PaddingAll11),
+                    ),
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                            padding: getPadding(left: 54, top: 15, bottom: 5),
+                            child: Text(
+                                "Account Holder",
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.left,
+                                style: AppStyle.txtPoppinsMedium14))),
+                    CustomTextFormField(
+                        focusNode: FocusNode(),
+                        autofocus: true,
+                        controller: holderController,
+                        hintText: owner.owner_accountHolder,
+                        margin: getMargin(left: 48, right: 48),
+                        padding: TextFormFieldPadding.PaddingAll11,
+                        textInputType: TextInputType.emailAddress),
                     CustomButton(
                       height: getVerticalSize(55),
                       width: getHorizontalSize(320),
@@ -298,7 +367,7 @@ Widget buildOwner (House_Owner owner, String currentUserId,String decryptedPassw
                         if (mobileController.text == "") {
                           updateData['owner_phone'] = owner.owner_phone;
                         } else {
-                          updateData['owner_phone'] = mobileController.text;
+                          updateData['owner_phone'] = "+6" + mobileController.text;
                         }
 
                         if (passwordController.text == "") {
@@ -308,6 +377,24 @@ Widget buildOwner (House_Owner owner, String currentUserId,String decryptedPassw
                           // Encrypt the new password before updating
                           String encryptedPassword = _encryptPassword(passwordController.text);
                           updateData['owner_password'] = encryptedPassword;
+                        }
+
+                        if (bankController.text == "") {
+                          updateData['owner_accountBank'] = owner.owner_accountBank;
+                        } else {
+                          updateData['owner_accountBank'] = bankController.text;
+                        }
+
+                        if (accountController.text == "") {
+                          updateData['owner_accountNo'] = owner.owner_accountNo;
+                        } else {
+                          updateData['owner_accountNo'] = accountController.text;
+                        }
+
+                        if (holderController.text == "") {
+                          updateData['owner_accountHolder'] = owner.owner_accountHolder;
+                        } else {
+                          updateData['owner_accountHolder'] = holderController.text;
                         }
 
                         docOwner.update(updateData);
@@ -379,7 +466,7 @@ Widget build(BuildContext context) {
 
          bottomNavigationBar: Container(
              width: double.maxFinite,
-             padding: getPadding(left: 44, top: 5, right: 44, bottom: 15),
+             padding: getPadding(left: 45, top: 5, right: 45, bottom: 15),
              decoration: AppDecoration.fillWhiteA700,
              child: Column(
                  mainAxisSize: MainAxisSize.min,
@@ -391,7 +478,7 @@ Widget build(BuildContext context) {
                          crossAxisAlignment: CrossAxisAlignment.end,
 
                          children: [Padding(
-                             padding: getPadding(top: 16),
+                             padding: getPadding(top: 15),
                              child: GestureDetector(
                                  onTap: () {
                                    onTapHomeicon(context);
@@ -401,8 +488,8 @@ Widget build(BuildContext context) {
                                      mainAxisAlignment: MainAxisAlignment.start,
                                      children: [CustomImageView(
                                          imagePath: ImageConstant.imgVuesaxboldhome,
-                                         height: getSize(24),
-                                         width: getSize(24)),
+                                         height: getSize(26),
+                                         width: getSize(26)),
                                        Padding(
                                            padding: getPadding(top: 2),
                                            child: Text(
@@ -416,77 +503,21 @@ Widget build(BuildContext context) {
                              )
                          ),
                            GestureDetector(
-                               onTap: () {onTapExploreicon(context);},
-                               child: Padding(
-                                   padding: getPadding(top: 16),
+                               onTap: () {onTapButton(context);},
+                               child:Padding(
+                                   padding: getPadding(top: 15),
                                    child: Column(
-                                       mainAxisSize: MainAxisSize.min,
-                                       mainAxisAlignment: MainAxisAlignment.start,
-                                       children: [CustomImageView(
-                                           svgPath: ImageConstant.imgCalendar10,
-                                           height: getSize(24),
-                                           width: getSize(24)),
-                                         Padding(
-                                             padding: getPadding(top: 2),
-                                             child: Text(
-                                                 "Schedule",
-                                                 overflow: TextOverflow.ellipsis,
-                                                 textAlign: TextAlign.left,
-                                                 style: AppStyle.txtHindMedium12))]))),
-                           Container(
-                             height: getSize(64),
-                             width: getSize(64),
-                             child: Stack(
-                               alignment: Alignment.topCenter,
-                               children: [
-                                 Align(
-                                   alignment: Alignment.center,
-                                   child: GestureDetector(
-                                     child: Column(
                                        mainAxisSize: MainAxisSize.min,
                                        mainAxisAlignment: MainAxisAlignment.start,
                                        children: [
-                                         Container(
-                                           height: getSize(55),
-                                           width: getSize(55),
-                                           decoration: BoxDecoration(
-                                             color: ColorConstant.gray20001,
-                                             borderRadius: BorderRadius.circular(getHorizontalSize(27)),
-                                           ),
-                                         ),
-                                       ],
-                                     ),
-                                   ),
-                                 ),
-                                 GestureDetector(
-                                   child: CustomImageView(
-                                     onTap: () {onTapButton(context);},
-                                     svgPath: ImageConstant.imgIcon,
-                                     height: getSize(43),
-                                     width: getSize(43),
-                                     alignment: Alignment.topCenter,
-                                     margin: getMargin(top: 7),
-                                   ),
-                                 ),
-                               ],
-                             ),
-                           ),
-
-                           GestureDetector(
-                               onTap: () {onTapChat(context);},
-                               child:Padding(
-                                   padding: getPadding(top: 16),
-                                   child: Column(
-                                       mainAxisSize: MainAxisSize.min,
-                                       mainAxisAlignment: MainAxisAlignment.start,
-                                       children: [CustomImageView(
-                                           svgPath: ImageConstant.imgComputer,
-                                           height: getSize(24),
-                                           width: getSize(24)),
+                                         CustomImageView(
+                                             svgPath: ImageConstant.imgComputer,
+                                             height: getSize(25),
+                                             width: getSize(25)),
                                          Padding(
                                              padding: getPadding(top: 2),
                                              child: Text(
-                                                 "Chat",
+                                                 "Property",
                                                  overflow: TextOverflow.ellipsis,
                                                  textAlign: TextAlign.left,
                                                  style: AppStyle.txtHindMedium12))
@@ -495,16 +526,37 @@ Widget build(BuildContext context) {
                                )
                            ),
                            GestureDetector(
+                               onTap: () {onTapExploreicon(context);},
+                               child: Padding(
+                                   padding: getPadding(top: 15),
+                                   child: Column(
+                                       mainAxisSize: MainAxisSize.min,
+                                       mainAxisAlignment: MainAxisAlignment.start,
+                                       children: [CustomImageView(
+                                           svgPath: ImageConstant.imgCalendar10,
+                                           height: getSize(25),
+                                           width: getSize(25)),
+                                         Padding(
+                                             padding: getPadding(top: 2),
+                                             child: Text(
+                                                 "Booking",
+                                                 overflow: TextOverflow.ellipsis,
+                                                 textAlign: TextAlign.left,
+                                                 style: AppStyle.txtHindMedium12))]
+                                   )
+                               )
+                           ),
+                           GestureDetector(
                                onTap: () {onTapProfile(context);},
                                child:Padding(
-                                   padding: getPadding(top: 16),
+                                   padding: getPadding(top: 15),
                                    child: Column(
                                        mainAxisSize: MainAxisSize.min,
                                        mainAxisAlignment: MainAxisAlignment.start,
                                        children: [CustomImageView(
                                            svgPath: ImageConstant.imgUser,
-                                           height: getSize(24),
-                                           width: getSize(24)),
+                                           height: getSize(25),
+                                           width: getSize(25)),
                                          Padding(
                                              padding: getPadding(top: 2),
                                              child: Text(

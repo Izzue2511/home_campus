@@ -3,13 +3,18 @@ import 'package:homecampus/core/app_export.dart';
 import 'package:homecampus/widgets/app_bar/appbar_iconbutton.dart';
 import 'package:homecampus/widgets/app_bar/appbar_subtitle.dart';
 import 'package:homecampus/widgets/app_bar/custom_app_bar.dart';
-import 'package:homecampus/widgets/custom_button.dart';
-import 'package:homecampus/widgets/custom_text_form_field.dart';
+// import 'package:homecampus/widgets/custom_button.dart';
+// import 'package:homecampus/widgets/custom_text_form_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+// import 'package:path/path.dart' as path;
 import 'package:homecampus/core/utils/user_provider.dart';
-import 'package:homecampus/routes/app_routes.dart';
+// import 'package:homecampus/routes/app_routes.dart';
+// import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+// import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:io';
 // ignore_for_file: must_be_immutable
 
 class ScheduleVisitCanceledStudentScreen extends StatefulWidget {
@@ -120,7 +125,7 @@ class Booking_Property{
   String property_id;
   String owner_id;
   final String booking_price;
-  final String booking_receipt;
+  String? booking_receipt;
   final String booking_date;
   final String booking_status;
 
@@ -171,7 +176,6 @@ class _ScheduleVisitCanceledStudentScreenState extends State<ScheduleVisitCancel
     inputData();
   }
 
-
   void inputData() async {
     //propertyId = Provider.of<UserProvider>(context).propertyId;
     //print('Property ID: $propertyId'); // Add this line to print the propertyId
@@ -195,7 +199,47 @@ class _ScheduleVisitCanceledStudentScreenState extends State<ScheduleVisitCancel
     return auth.currentUser != null;
   }
 
-Widget buildBooking (Booking_Property booking, Rental_Property property) => Container(
+  bool isFileUploaded = false;
+
+  String getFileName(Booking_Property booking) {
+    if (booking.booking_receipt != null) {
+      Uri uri = Uri.parse(booking.booking_receipt!);
+      String decodedPath = Uri.decodeFull(uri.path);
+      List<String> pathSegments = decodedPath.split('/');
+      String fileName = pathSegments.last;
+      return fileName;
+    } else {
+      return 'No file picked';
+    }
+  }
+
+  String getFileSize(Booking_Property booking) {
+    if (booking.booking_receipt != null) {
+      int sizeInBytes = File(booking.booking_receipt!).lengthSync();
+      double sizeInKB = sizeInBytes / 1024;
+      return sizeInKB.toStringAsFixed(2) + ' KB';
+    } else {
+      return '';
+    }
+  }
+
+  File? file;
+  String? filePath;
+  String? downloadURL;
+
+  Future<void> _downloadPDF(Booking_Property booking) async {
+    try {
+      if (booking.booking_receipt != null) {
+        await launch(booking.booking_receipt!);
+      } else {
+        print('Booking receipt is not available');
+      }
+    } catch (e) {
+      print('Error launching URL: $e');
+    }
+  }
+
+  Widget buildBooking (Booking_Property booking, Rental_Property property) => Container(
     height: getVerticalSize(850),
     width: double.maxFinite,
     child: Stack(
@@ -240,12 +284,25 @@ Widget buildBooking (Booking_Property booking, Rental_Property property) => Cont
                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                CustomImageView(
-                                                    imagePath: 'assets/images/house_1.jpg',
-                                                    height: getVerticalSize(130),
-                                                    width: getHorizontalSize(130),
-                                                    radius: BorderRadius.circular(
-                                                        getHorizontalSize(20))
+                                                Container(
+                                                  height: getVerticalSize(130),
+                                                  width: getHorizontalSize(139),
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(
+                                                        getHorizontalSize(20)),
+                                                    child: Image.network(
+                                                      property.property_image ?? '',
+                                                      height: getVerticalSize(130),
+                                                      width: getHorizontalSize(130),
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder: (context, error, stackTrace) {
+                                                        return Icon(
+                                                          Icons.error_outline,
+                                                          size: getHorizontalSize(40),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
                                                 ),
                                                 Padding(
                                                     padding: getPadding(bottom: 5),
@@ -410,14 +467,125 @@ Widget buildBooking (Booking_Property booking, Rental_Property property) => Cont
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: 20,left: 10),
-                                        child: Text(
-                                          booking.booking_receipt,
-                                          style: TextStyle(
-                                            fontFamily: 'Hind',
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 14,
-                                            color: Colors.black,
+                                        padding: EdgeInsets.only(top: 10,left: 0),
+                                        child: Container(
+                                          margin: getMargin(
+                                            left: 7,
+                                            top: 29,
+                                            right: 7,
+                                          ),
+                                          padding: getPadding(
+                                            left: 8,
+                                            top: 2,
+                                            right: 8,
+                                            bottom: 2,
+                                          ),
+                                          decoration: AppDecoration.fillGray5003.copyWith(
+                                            borderRadius:
+                                            BorderRadiusStyle.roundedBorder5,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Card(
+                                                clipBehavior: Clip.antiAlias,
+                                                elevation: 0,
+                                                margin: getMargin(
+                                                  top: 3,
+                                                  bottom: 3,
+                                                ),
+                                                color: ColorConstant.red900,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadiusStyle.roundedBorder5,
+                                                ),
+                                                child: Container(
+                                                  height: getVerticalSize(
+                                                    42,
+                                                  ),
+                                                  width: getHorizontalSize(
+                                                    36,
+                                                  ),
+                                                  padding: getPadding(
+                                                    all: 6,
+                                                  ),
+                                                  decoration:
+                                                  AppDecoration.fillGray5003.copyWith(
+                                                    borderRadius:
+                                                    BorderRadiusStyle.roundedBorder5,
+                                                  ),
+                                                  child: Stack(
+                                                    children: [
+                                                      CustomImageView(
+                                                        imagePath:
+                                                        ImageConstant.imgImage2,
+                                                        height: getVerticalSize(
+                                                          28,
+                                                        ),
+                                                        width: getHorizontalSize(
+                                                          23,
+                                                        ),
+                                                        alignment: Alignment.topCenter,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: getPadding(
+                                                  left: 12,
+                                                  top: 10,
+                                                  bottom: 10,
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      getFileName(booking),
+                                                      overflow: TextOverflow.ellipsis,
+                                                      textAlign: TextAlign.left,
+                                                      style: AppStyle
+                                                          .txtHindMedium12,
+                                                    ),
+
+                                                  ],
+                                                ),
+                                              ),
+                                              Spacer(),
+                                              Container(
+                                                height: getSize(
+                                                  38,
+                                                ),
+                                                width: getSize(
+                                                  38,
+                                                ),
+                                                margin: getMargin(
+                                                  top: 11,
+                                                  right: 5,
+                                                ),
+                                                child: Stack(
+                                                  alignment: Alignment.center,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        _downloadPDF(booking);
+                                                      },
+                                                      child: CustomImageView(
+                                                        svgPath: ImageConstant.imgCalendar11,
+                                                        height: getSize(38),
+                                                        width: getSize(38),
+                                                        alignment: Alignment.center,
+                                                      ),
+
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),

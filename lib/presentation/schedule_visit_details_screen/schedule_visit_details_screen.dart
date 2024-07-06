@@ -4,14 +4,16 @@ import 'package:homecampus/widgets/app_bar/appbar_iconbutton.dart';
 import 'package:homecampus/widgets/app_bar/appbar_subtitle.dart';
 import 'package:homecampus/widgets/app_bar/custom_app_bar.dart';
 import 'package:homecampus/widgets/custom_button.dart';
-import 'package:homecampus/widgets/custom_text_form_field.dart';
+// import 'package:homecampus/widgets/custom_text_form_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:homecampus/core/utils/user_provider.dart';
-import 'package:homecampus/routes/app_routes.dart';
+// import 'package:homecampus/routes/app_routes.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
+// import 'package:firebase_analytics/observer.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:io';
 // ignore_for_file: must_be_immutable
 
 class ScheduleVisitDetailsScreen extends StatefulWidget {
@@ -203,6 +205,46 @@ class _ScheduleVisitDetailsScreenState extends State<ScheduleVisitDetailsScreen>
     return auth.currentUser != null;
   }
 
+  bool isFileUploaded = false;
+
+  String getFileName(Booking_Property booking) {
+    if (booking.booking_receipt != null) {
+      Uri uri = Uri.parse(booking.booking_receipt!);
+      String decodedPath = Uri.decodeFull(uri.path);
+      List<String> pathSegments = decodedPath.split('/');
+      String fileName = pathSegments.last;
+      return fileName;
+    } else {
+      return 'No file picked';
+    }
+  }
+
+  String getFileSize(Booking_Property booking) {
+    if (booking.booking_receipt != null) {
+      int sizeInBytes = File(booking.booking_receipt!).lengthSync();
+      double sizeInKB = sizeInBytes / 1024;
+      return sizeInKB.toStringAsFixed(2) + ' KB';
+    } else {
+      return '';
+    }
+  }
+
+  File? file;
+  String? filePath;
+  String? downloadURL;
+
+  Future<void> _downloadPDF(Booking_Property booking) async {
+    try {
+      if (booking.booking_receipt != null) {
+        await launch(booking.booking_receipt!);
+      } else {
+        print('Booking receipt is not available');
+      }
+    } catch (e) {
+      print('Error launching URL: $e');
+    }
+  }
+
   Widget buildBooking (Booking_Property booking, Rental_Property property) => Container(
       height: getVerticalSize(850),
       width: double.maxFinite,
@@ -248,12 +290,25 @@ class _ScheduleVisitDetailsScreenState extends State<ScheduleVisitDetailsScreen>
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  CustomImageView(
-                                                      imagePath: 'assets/images/house_1.jpg',
-                                                      height: getVerticalSize(130),
-                                                      width: getHorizontalSize(130),
-                                                      radius: BorderRadius.circular(
-                                                          getHorizontalSize(20))
+                                                  Container(
+                                                    height: getVerticalSize(130),
+                                                    width: getHorizontalSize(139),
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(
+                                                          getHorizontalSize(20)),
+                                                      child: Image.network(
+                                                        property.property_image ?? '',
+                                                        height: getVerticalSize(130),
+                                                        width: getHorizontalSize(130),
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (context, error, stackTrace) {
+                                                          return Icon(
+                                                            Icons.error_outline,
+                                                            size: getHorizontalSize(40),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
                                                   ),
                                                   Padding(
                                                       padding: getPadding(bottom: 5),
@@ -418,14 +473,125 @@ class _ScheduleVisitDetailsScreenState extends State<ScheduleVisitDetailsScreen>
                                           ),
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.only(top: 20,left: 10),
-                                          child: Text(
-                                            booking.booking_receipt,
-                                            style: TextStyle(
-                                              fontFamily: 'Hind',
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 14,
-                                              color: Colors.black,
+                                          padding: EdgeInsets.only(top: 10,left: 0),
+                                          child: Container(
+                                            margin: getMargin(
+                                              left: 7,
+                                              top: 29,
+                                              right: 7,
+                                            ),
+                                            padding: getPadding(
+                                              left: 8,
+                                              top: 2,
+                                              right: 8,
+                                              bottom: 2,
+                                            ),
+                                            decoration: AppDecoration.fillGray5003.copyWith(
+                                              borderRadius:
+                                              BorderRadiusStyle.roundedBorder5,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  elevation: 0,
+                                                  margin: getMargin(
+                                                    top: 3,
+                                                    bottom: 3,
+                                                  ),
+                                                  color: ColorConstant.red900,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadiusStyle.roundedBorder5,
+                                                  ),
+                                                  child: Container(
+                                                    height: getVerticalSize(
+                                                      42,
+                                                    ),
+                                                    width: getHorizontalSize(
+                                                      36,
+                                                    ),
+                                                    padding: getPadding(
+                                                      all: 6,
+                                                    ),
+                                                    decoration:
+                                                    AppDecoration.fillGray5003.copyWith(
+                                                      borderRadius:
+                                                      BorderRadiusStyle.roundedBorder5,
+                                                    ),
+                                                    child: Stack(
+                                                      children: [
+                                                        CustomImageView(
+                                                          imagePath:
+                                                          ImageConstant.imgImage2,
+                                                          height: getVerticalSize(
+                                                            28,
+                                                          ),
+                                                          width: getHorizontalSize(
+                                                            23,
+                                                          ),
+                                                          alignment: Alignment.topCenter,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: getPadding(
+                                                    left: 12,
+                                                    top: 10,
+                                                    bottom: 10,
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        getFileName(booking),
+                                                        overflow: TextOverflow.ellipsis,
+                                                        textAlign: TextAlign.left,
+                                                        style: AppStyle
+                                                            .txtHindMedium12,
+                                                      ),
+
+                                                    ],
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                Container(
+                                                  height: getSize(
+                                                    38,
+                                                  ),
+                                                  width: getSize(
+                                                    38,
+                                                  ),
+                                                  margin: getMargin(
+                                                    top: 11,
+                                                    right: 5,
+                                                  ),
+                                                  child: Stack(
+                                                    alignment: Alignment.center,
+                                                    children: [
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          _downloadPDF(booking);
+                                                        },
+                                                        child: CustomImageView(
+                                                          svgPath: ImageConstant.imgCalendar11,
+                                                          height: getSize(38),
+                                                          width: getSize(38),
+                                                          alignment: Alignment.center,
+                                                        ),
+
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
@@ -529,7 +695,7 @@ Widget build(
 
          bottomNavigationBar: Container(
              width: double.maxFinite,
-             padding: getPadding(left: 44, top: 5, right: 44, bottom: 15),
+             padding: getPadding(left: 45, top: 5, right: 45, bottom: 15),
              decoration: AppDecoration.fillWhiteA700,
              child: Column(
                  mainAxisSize: MainAxisSize.min,
@@ -541,131 +707,96 @@ Widget build(
                          crossAxisAlignment: CrossAxisAlignment.end,
 
                          children: [Padding(
-                             padding: getPadding(top: 16),
+                             padding: getPadding(top: 15),
                              child: GestureDetector(
                                  onTap: () {
-                                  onTapHomeicon(context);
+                                   onTapHomeicon(context);
                                  },
                                  child: Column(
                                      mainAxisSize: MainAxisSize.min,
                                      mainAxisAlignment: MainAxisAlignment.start,
                                      children: [CustomImageView(
                                          imagePath: ImageConstant.imgVuesaxboldhome,
-                                         height: getSize(24),
-                                         width: getSize(24)),
-                                      Padding(
-                                          padding: getPadding(top: 2),
-                                          child: Text(
-                                              "Home",
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: AppStyle.txtHindMedium12)
-                                      )
-                                     ]
-                                 )
-                             )
-                         ),
-                          GestureDetector(
-                              onTap: () {onTapExploreicon(context);},
-                              child: Padding(
-                                  padding: getPadding(top: 16),
-                                  child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [CustomImageView(
-                                          svgPath: ImageConstant.imgCalendar10,
-                                          height: getSize(24),
-                                          width: getSize(24)),
+                                         height: getSize(26),
+                                         width: getSize(26)),
                                        Padding(
                                            padding: getPadding(top: 2),
                                            child: Text(
-                                               "Schedule",
-                                               overflow: TextOverflow.ellipsis,
-                                               textAlign: TextAlign.left,
-                                               style: AppStyle.txtHindMedium12))]))),
-                          Container(
-                           height: getSize(64),
-                           width: getSize(64),
-                           child: Stack(
-                            alignment: Alignment.topCenter,
-                            children: [
-                             Align(
-                              alignment: Alignment.center,
-                              child: GestureDetector(
-                               child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                 Container(
-                                  height: getSize(55),
-                                  width: getSize(55),
-                                  decoration: BoxDecoration(
-                                   color: ColorConstant.gray20001,
-                                   borderRadius: BorderRadius.circular(getHorizontalSize(27)),
-                                  ),
-                                 ),
-                                ],
-                               ),
-                              ),
-                             ),
-                             GestureDetector(
-                              child: CustomImageView(
-                               onTap: () {onTapButton(context);},
-                               svgPath: ImageConstant.imgIcon,
-                               height: getSize(43),
-                               width: getSize(43),
-                               alignment: Alignment.topCenter,
-                               margin: getMargin(top: 7),
-                              ),
-                             ),
-                            ],
-                           ),
-                          ),
-
-                          GestureDetector(
-                              onTap: () {onTapChat(context);},
-                              child:Padding(
-                                  padding: getPadding(top: 16),
-                                  child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [CustomImageView(
-                                          svgPath: ImageConstant.imgComputer,
-                                          height: getSize(24),
-                                          width: getSize(24)),
-                                       Padding(
-                                           padding: getPadding(top: 2),
-                                           child: Text(
-                                               "Chat",
-                                               overflow: TextOverflow.ellipsis,
-                                               textAlign: TextAlign.left,
-                                               style: AppStyle.txtHindMedium12))
-                                      ]
-                                  )
-                              )
-                          ),
-                          GestureDetector(
-                              onTap: () {onTapProfile(context);},
-                              child:Padding(
-                                  padding: getPadding(top: 16),
-                                  child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [CustomImageView(
-                                          svgPath: ImageConstant.imgUser,
-                                          height: getSize(24),
-                                          width: getSize(24)),
-                                       Padding(
-                                           padding: getPadding(top: 2),
-                                           child: Text(
-                                               "Profile",
+                                               "Home",
                                                overflow: TextOverflow.ellipsis,
                                                textAlign: TextAlign.left,
                                                style: AppStyle.txtHindMedium12)
                                        )
-                                      ]
-                                  )
-                              ))
+                                     ]
+                                 )
+                             )
+                         ),
+                           GestureDetector(
+                               onTap: () {onTapButton(context);},
+                               child:Padding(
+                                   padding: getPadding(top: 15),
+                                   child: Column(
+                                       mainAxisSize: MainAxisSize.min,
+                                       mainAxisAlignment: MainAxisAlignment.start,
+                                       children: [
+                                         CustomImageView(
+                                             svgPath: ImageConstant.imgComputer,
+                                             height: getSize(25),
+                                             width: getSize(25)),
+                                         Padding(
+                                             padding: getPadding(top: 2),
+                                             child: Text(
+                                                 "Property",
+                                                 overflow: TextOverflow.ellipsis,
+                                                 textAlign: TextAlign.left,
+                                                 style: AppStyle.txtHindMedium12))
+                                       ]
+                                   )
+                               )
+                           ),
+                           GestureDetector(
+                               onTap: () {onTapExploreicon(context);},
+                               child: Padding(
+                                   padding: getPadding(top: 15),
+                                   child: Column(
+                                       mainAxisSize: MainAxisSize.min,
+                                       mainAxisAlignment: MainAxisAlignment.start,
+                                       children: [CustomImageView(
+                                           svgPath: ImageConstant.imgCalendar10,
+                                           height: getSize(25),
+                                           width: getSize(25)),
+                                         Padding(
+                                             padding: getPadding(top: 2),
+                                             child: Text(
+                                                 "Booking",
+                                                 overflow: TextOverflow.ellipsis,
+                                                 textAlign: TextAlign.left,
+                                                 style: AppStyle.txtHindMedium12))]
+                                   )
+                               )
+                           ),
+                           GestureDetector(
+                               onTap: () {onTapProfile(context);},
+                               child:Padding(
+                                   padding: getPadding(top: 15),
+                                   child: Column(
+                                       mainAxisSize: MainAxisSize.min,
+                                       mainAxisAlignment: MainAxisAlignment.start,
+                                       children: [CustomImageView(
+                                           svgPath: ImageConstant.imgUser,
+                                           height: getSize(25),
+                                           width: getSize(25)),
+                                         Padding(
+                                             padding: getPadding(top: 2),
+                                             child: Text(
+                                                 "Profile",
+                                                 overflow: TextOverflow.ellipsis,
+                                                 textAlign: TextAlign.left,
+                                                 style: AppStyle.txtHindMedium12)
+                                         )
+                                       ]
+                                   )
+                               ))
                          ]
                      )
                  )
